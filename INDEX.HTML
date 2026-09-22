@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>360 Ops — Cleaner</title>
+<style>
+/* ============================================================
+   RESET Y VARIABLES
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --primary: #1F3A5F;
+  --secondary: #2E86AB;
+  --accent: #F18F01;
+  --danger: #C73E1D;
+  --success: #3B8EA5;
+  --light: #F5F5F5;
+  --mid: #E0E0E0;
+  --dark: #4A4A4A;
+  --white: #FFFFFF;
+  --okgreen: #D4EDDA;
+  --nored: #F8D7DA;
+  --warnyellow: #FFF3CD;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--light);
+  color: var(--dark);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+}
+
+/* ============================================================
+   CONTENEDOR MÓVIL (simula pantalla de teléfono)
+   ============================================================ */
+.phone {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  background: var(--white);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  background: var(--primary);
+  color: var(--white);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.header .logo {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header .logo span {
+  color: var(--accent);
+}
+
+.header .back {
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 8px;
+  display: none;
+}
+
+.header .back.visible {
+  display: block;
+}
+
+.header .help {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: var(--white);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+/* ============================================================
+   CONTENIDO
+   ============================================================ */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  padding-bottom: 100px;
+}
+
+.screen {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 24px;
+  background: linear-gradient(160deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--white);
+}
+
+.login-container .logo-big {
+  font-size: 42px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: -1px;
+}
+
+.login-container .logo-big span {
+  color: var(--accent);
+}
+
+.login-container .subtitle {
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.85;
+  margin-bottom: 40px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  background: rgba(255,255,255,0.95);
+  color: var(--dark);
+}
+
+.form-group input:focus {
+  outline: 2px solid var(--accent);
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--white);
+  margin-top: 8px;
+}
+
+.btn-primary:hover {
+  background: #d97d00;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--white);
+}
+
+.btn-secondary:hover {
+  background: #26719a;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--secondary);
+  color: var(--secondary);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.btn-success {
+  background: var(--success);
+  color: var(--white);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  opacity: 0.9;
+  margin-top: 16px;
+}
+
+/* ============================================================
+   TARJETAS DE TAREA
+   ============================================================ */
+.greeting {
+  margin-bottom: 20px;
+}
+
+.greeting h2 {
+  font-size: 22px;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.greeting p {
+  font-size: 14px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.task-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-left: 4px solid var(--secondary);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow);
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.task-card.alert-red {
+  border-left-color: var(--danger);
+  background: linear-gradient(to right, var(--nored) 0%, var(--white) 15%);
+}
+
+.task-card .task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.task-card .address {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 15px;
+}
+
+.task-card .badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-limpieza { background: #E3F2FD; color: #1565C0; }
+.badge-refresh { background: #E8F5E9; color: #2E7D32; }
+.badge-deep { background: #F3E5F5; color: #6A1B9A; }
+.badge-alert { background: var(--nored); color: var(--danger); }
+
+.task-card .task-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.task-card .task-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.alert-banner {
+  background: var(--nored);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.alert-banner .icon {
+  font-size: 20px;
+}
+
+/* ============================================================
+   DETALLE DE TAREA
+   ============================================================ */
+.detail-section {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.detail-section h3 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--secondary);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--light);
+  font-size: 15px;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row .label {
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.detail-row .value {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.code-box {
+  background: var(--primary);
+  color: var(--white);
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  font-family: 'Courier New', monospace;
+  margin: 12px 0;
+}
+
+.code-box.hidden {
+  background: var(--mid);
+  color: var(--dark);
+  letter-spacing: 4px;
+}
+
+/* ============================================================
+   GUÍA PASO A PASO
+   ============================================================ */
+.progress-bar {
+  background: var(--mid);
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progress-bar .fill {
+  background: linear-gradient(90deg, var(--secondary), var(--success));
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.zone-header {
+  background: var(--secondary);
+  color: var(--white);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checklist {
+  list-style: none;
+}
+
+.checklist li {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.checklist li:hover {
+  border-color: var(--secondary);
+}
+
+.checklist li.done {
+  background: var(--okgreen);
+  border-color: var(--success);
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.checklist li .check {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--mid);
+  border-radius: 6px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.checklist li.done .check {
+  background: var(--success);
+  border-color: var(--success);
+  color: var(--white);
+}
+
+.checklist li .check::after {
+  content: '✓';
+  color: var(--white);
+  font-weight: bold;
+  display: none;
+}
+
+.checklist li.done .check::after {
+  display: block;
+}
+
+.checklist li .text {
+  flex: 1;
+  font-size: 15px;
+}
+
+.checklist li .photo-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.checklist li .photo-btn:hover {
+  opacity: 1;
+}
+
+.checklist li .photo-btn.taken {
+  opacity: 1;
+  color: var(--success);
+}
+
+/* ============================================================
+   6 PREGUNTAS FINALES
+   ============================================================ */
+.question-item {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.question-item p {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--primary);
+}
+
+.question-item .options {
+  display: flex;
+  gap: 8px;
+}
+
+.question-item .options button {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid var(--mid);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--dark);
+}
+
+.question-item .options button.yes.selected {
+  background: var(--okgreen);
+  border-color: var(--success);
+  color: #2E7D32;
+}
+
+.question-item .options button.no.selected {
+  background: var(--nored);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* ============================================================
+   FOTO + FIRMA
+   ============================================================ */
+.camera-area {
+  background: var(--light);
+  border: 2px dashed var(--mid);
+  border-radius: var(--radius);
+  padding: 40px 20px;
+  text-align: center;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.camera-area:hover {
+  border-color: var(--secondary);
+  background: #F0F7FB;
+}
+
+.camera-area .icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.camera-area p {
+  font-size: 14px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.photo-preview {
+  width: 100%;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  display: none;
+}
+
+.photo-preview.visible {
+  display: block;
+}
+
+.signature-area {
+  background: var(--white);
+  border: 2px solid var(--mid);
+  border-radius: var(--radius);
+  padding: 8px;
+  margin-bottom: 16px;
+}
+
+.signature-area canvas {
+  width: 100%;
+  height: 120px;
+  display: block;
+  background: var(--light);
+  border-radius: var(--radius-sm);
+  cursor: crosshair;
+  touch-action: none;
+}
+
+/* ============================================================
+   BOTTOM NAV
+   ============================================================ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  background: var(--white);
+  border-top: 1px solid var(--mid);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  z-index: 10;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+}
+
+.bottom-nav button {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  font-size: 11px;
+  color: var(--dark);
+  opacity: 0.5;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: all 0.2s;
+  font-family: var(--font);
+}
+
+.bottom-nav button .nav-icon {
+  font-size: 20px;
+}
+
+.bottom-nav button.active {
+  opacity: 1;
+  color: var(--primary);
+}
+
+/* ============================================================
+   FOOTER DE ACCIÓN
+   ============================================================ */
+.action-footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  background: var(--white);
+  border-top: 1px solid var(--mid);
+  padding: 16px 20px;
+  z-index: 10;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--primary);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 100;
+  box-shadow: var(--shadow-lg);
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (min-width: 421px) {
+  body {
+    background: #E8EBEE;
+    padding: 20px 0;
+  }
+  .phone {
+    min-height: calc(100vh - 40px);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+}
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.text-center { text-align: center; }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="header">
+    <button class="back" id="backBtn" onclick="goBack()">←</button>
+    <div class="logo">360<span>Ops</span></div>
+    <button class="help" onclick="showToast('Ayuda: llama al +34 900 000 000')">?</button>
+  </header>
+
+  <!-- ============================================================
+       CONTENIDO
+       ============================================================ -->
+  <main class="content">
+
+    <!-- ============================================================
+         PANTALLA 1: LOGIN
+         ============================================================ -->
+    <section class="screen active" id="screen-login">
+      <div class="login-container" style="margin: -20px; padding: 40px 24px; min-height: calc(100vh - 60px);">
+        <div class="logo-big">360<span>Ops</span></div>
+        <p class="subtitle">Tu día, organizado</p>
+
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <input type="email" id="email" placeholder="maria@360estates.com" value="maria@360estates.com">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" placeholder="••••••••" value="demo1234">
+        </div>
+
+        <button class="btn btn-primary" onclick="login()">Entrar</button>
+        <button class="btn-link" onclick="showToast('Contacta a tu líder')">¿Olvidaste tu contraseña?</button>
+        <button class="btn-link" onclick="showToast('Soporte: +34 900 000 000')">Ayuda sin iniciar sesión</button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PANTALLA 2: MI DÍA
+         ============================================================ -->
+    <section class="screen" id="screen-dia">
+      <div class="greeting">
+        <h2>Hola, María</h2>
+        <p id="currentDate">Lunes 22 sep 2026</p>
+      </div>
+
+      <div id="tasksList"></div>
+    </section>
+
+    <!-- ============================================================
+         PANTALLA 3: DETALLE DE TAREA
+         ============================================================ -->
+    <section class="screen" id="screen-detalle">
+      <div id="detailAlert"></div>
+
+      <div class="detail-section">
+        <h3>📍 Dirección</h3>
+        <div class="detail-row">
+          <span class="label">Apartamento</span>
+          <span class="value" id="detailAddress">Calle Mayor 12, 3B</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Tipo</span>
+          <span class="value" id="detailType">Limpieza</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Tiempo estimado</span>
+          <span class="value" id="detailTime">90 min</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h3>🔑 Acceso</h3>
+        <div class="detail-row">
+          <span class="label">Tipo</span>
+          <span class="value">Keybox</span>
+        </div>
+        <div class="code-box" id="accessCode">••••</div>
+        <p style="font-size: 12px; text-align: center; opacity: 0.7;">
+          El código se muestra 1 h antes y 1 h después de la tarea
+        </p>
+      </div>
+
+      <div class="detail-section">
+        <h3>⚙️ Acciones</h3>
+        <button class="btn btn-primary btn-block mb-1" onclick="startTask()">
+          📷 Escanear QR para empezar
+        </button>
+        <button class="btn btn-outline btn-block" onclick="showToast('Incidencia reportada')">
+          ⚠️ Reportar problema
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PANTALLA 4: GUÍA PASO A PASO
+         ============================================================ -->
+    <section class="screen" id="screen-guia">
+      <div class="progress-bar">
+        <div class="fill" id="progressFill" style="width: 0%;"></div>
+      </div>
+
+      <div class="zone-header" id="zoneHeader">
+        🚿 BAÑO
+      </div>
+
+      <ul class="checklist" id="checklist">
+        <!-- Se genera por JS -->
+      </ul>
+
+      <div class="mt-2">
+        <button class="btn btn-secondary btn-block mb-1" onclick="nextZone()">
+          Siguiente zona →
+        </button>
+        <button class="btn btn-outline btn-block" onclick="showToast('Incidencia reportada')">
+          ⚠️ Reportar incidencia
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PANTALLA 5: 6 PREGUNTAS FINALES
+         ============================================================ -->
+    <section class="screen" id="screen-preguntas">
+      <h2 style="font-size: 20px; color: var(--primary); margin-bottom: 8px;">
+        Preguntas finales
+      </h2>
+      <p style="font-size: 14px; opacity: 0.7; margin-bottom: 20px;">
+        Responde para cerrar la tarea
+      </p>
+
+      <div id="questionsList"></div>
+
+      <button class="btn btn-primary btn-block mt-2" onclick="goToPhoto()">
+        Continuar →
+      </button>
+    </section>
+
+    <!-- ============================================================
+         PANTALLA 6: FOTO + FIRMA
+         ============================================================ -->
+    <section class="screen" id="screen-foto">
+      <h2 style="font-size: 20px; color: var(--primary); margin-bottom: 8px;">
+        Cierre de tarea
+      </h2>
+      <p style="font-size: 14px; opacity: 0.7; margin-bottom: 20px;">
+        Foto de la llave en la caja y firma
+      </p>
+
+      <div class="camera-area" id="cameraArea" onclick="takePhoto()">
+        <span class="icon">📷</span>
+        <p>Toma foto de la llave en la caja</p>
+      </div>
+
+      <img class="photo-preview" id="photoPreview" alt="Foto de la llave">
+
+      <div class="signature-area">
+        <canvas id="signatureCanvas"></canvas>
+      </div>
+
+      <button class="btn btn-success btn-block" onclick="finishTask()">
+        ✅ Confirmar y cerrar tarea
+      </button>
+    </section>
+
+    <!-- ============================================================
+         PANTALLA 7: TAREA CERRADA
+         ============================================================ -->
+    <section class="screen" id="screen-cerrada">
+      <div style="text-align: center; padding: 40px 20px;">
+        <div style="font-size: 64px; margin-bottom: 16px;">✅</div>
+        <h2 style="color: var(--success); margin-bottom: 8px;">¡Tarea cerrada!</h2>
+        <p style="opacity: 0.7; margin-bottom: 24px;">
+          Se ha generado el PDF con toda la evidencia
+        </p>
+        <button class="btn btn-secondary btn-block mb-1" onclick="showToast('PDF descargado')">
+          📄 Descargar PDF
+        </button>
+        <button class="btn btn-outline btn-block" onclick="goHome()">
+          Volver al inicio
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       BOTTOM NAV
+       ============================================================ -->
+  <nav class="bottom-nav" id="bottomNav" style="display: none;">
+    <button class="active" onclick="goHome()">
+      <span class="nav-icon">🏠</span>
+      Inicio
+    </button>
+    <button onclick="showToast('Tareas completadas')">
+      <span class="nav-icon">✅</span>
+      Historial
+    </button>
+    <button onclick="showToast('Perfil')">
+      <span class="nav-icon">👤</span>
+      Perfil
+    </button>
+  </nav>
+
+</div>
+
+<!-- ============================================================
+     TOAST
+     ============================================================ -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ESTADO
+   ============================================================ */
+const state = {
+  currentScreen: 'login',
+  currentTask: null,
+  currentZone: 0,
+  checklist: [],
+  questions: [],
+  photoTaken: false,
+};
+
+/* ============================================================
+   DATOS DEMO
+   ============================================================ */
+const tasks = [
+  {
+    id: 1,
+    address: 'Calle Mayor 12, 3B',
+    type: 'Limpieza',
+    typeClass: 'badge-limpieza',
+    time: '90 min',
+    alertRed: false,
+  },
+  {
+    id: 2,
+    address: 'Av. del Puerto 45, 1A',
+    type: 'Refresh',
+    typeClass: 'badge-refresh',
+    time: '45 min',
+    alertRed: true,
+    alertReason: 'Propietario complicado. Revisa todo al detalle.',
+  },
+  {
+    id: 3,
+    address: 'Plaza España 8, 5C',
+    type: 'Deep cleaning',
+    typeClass: 'badge-deep',
+    time: '4 h',
+    alertRed: false,
+  },
+];
+
+const zones = [
+  {
+    name: '🚿 BAÑO',
+    items: [
+      'Limpiar inodoro',
+      'Limpiar lavabo',
+      'Limpiar espejo',
+      'Reponer amenities',
+      'Limpiar ducha',
+    ],
+  },
+  {
+    name: '🍳 COCINA',
+    items: [
+      'Limpiar encimera',
+      'Limpiar fregadero',
+      'Limpiar electrodomésticos',
+      'Vaciar basura',
+      'Reponer papel',
+    ],
+  },
+  {
+    name: '🛏️ CUARTOS',
+    items: [
+      'Hacer camas',
+      'Cambiar sábanas',
+      'Limpiar polvo',
+      'Ventilar',
+      'Aspirar y mopa',
+    ],
+  },
+];
+
+const finalQuestions = [
+  '¿Hay escoba?',
+  '¿Quedaron sábanas completas?',
+  '¿Falta papel?',
+  '¿Quedó basura por recoger?',
+  '¿Cerraste?',
+  '¿Pusiste la llave?',
+];
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screenId).classList.add('active');
+  state.currentScreen = screenId;
+
+  // Header back button
+  const backBtn = document.getElementById('backBtn');
+  if (screenId === 'login' || screenId === 'dia' || screenId === 'cerrada') {
+    backBtn.classList.remove('visible');
+  } else {
+    backBtn.classList.add('visible');
+  }
+
+  // Bottom nav
+  const bottomNav = document.getElementById('bottomNav');
+  if (screenId === 'login' || screenId === 'cerrada') {
+    bottomNav.style.display = 'none';
+  } else {
+    bottomNav.style.display = 'flex';
+  }
+
+  // Scroll top
+  document.querySelector('.content').scrollTop = 0;
+}
+
+function goBack() {
+  const order = ['login', 'dia', 'detalle', 'guia', 'preguntas', 'foto', 'cerrada'];
+  const idx = order.indexOf(state.currentScreen);
+  if (idx > 1) {
+    showScreen(order[idx - 1]);
+  } else {
+    showScreen('dia');
+  }
+}
+
+function goHome() {
+  renderTasks();
+  showScreen('dia');
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+function login() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  if (!email || !password) {
+    showToast('Completa todos los campos', 'error');
+    return;
+  }
+
+  showToast('Bienvenida, María', 'success');
+  renderTasks();
+  showScreen('dia');
+}
+
+/* ============================================================
+   MI DÍA
+   ============================================================ */
+function renderTasks() {
+  const list = document.getElementById('tasksList');
+  list.innerHTML = '';
+
+  tasks.forEach(task => {
+    const card = document.createElement('div');
+    card.className = 'task-card' + (task.alertRed ? ' alert-red' : '');
+    card.onclick = () => openTask(task);
+
+    card.innerHTML = `
+      <div class="task-header">
+        <div class="address">${task.address}</div>
+        <span class="badge ${task.typeClass}">${task.type}</span>
+      </div>
+      <div class="task-meta">
+        <span>⏱ ${task.time}</span>
+        ${task.alertRed ? '<span style="color: var(--danger); font-weight: 600;">🔴 Alerta roja</span>' : ''}
+      </div>
+    `;
+
+    list.appendChild(card);
+  });
+
+  // Fecha actual
+  const now = new Date();
+  const options = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+  document.getElementById('currentDate').textContent =
+    now.toLocaleDateString('es-ES', options).replace(/^\w/, c => c.toUpperCase());
+}
+
+/* ============================================================
+   DETALLE DE TAREA
+   ============================================================ */
+function openTask(task) {
+  state.currentTask = task;
+
+  document.getElementById('detailAddress').textContent = task.address;
+  document.getElementById('detailType').textContent = task.type;
+  document.getElementById('detailTime').textContent = task.time;
+
+  const alertDiv = document.getElementById('detailAlert');
+  if (task.alertRed) {
+    alertDiv.innerHTML = `
+      <div class="alert-banner">
+        <span class="icon">🔴</span>
+        <div>
+          <strong>ALERTA ROJA</strong><br>
+          <span style="font-size: 13px;">${task.alertReason}</span>
+        </div>
+      </div>
+    `;
+  } else {
+    alertDiv.innerHTML = '';
+  }
+
+  // Código de acceso (demo: se muestra a los 2 segundos)
+  const codeBox = document.getElementById('accessCode');
+  codeBox.textContent = '••••';
+  codeBox.classList.add('hidden');
+  setTimeout(() => {
+    codeBox.textContent = '4829';
+    codeBox.classList.remove('hidden');
+  }, 2000);
+
+  showScreen('detalle');
+}
+
+/* ============================================================
+   GUÍA PASO A PASO
+   ============================================================ */
+function startTask() {
+  showToast('QR escaneado. Reloj iniciado', 'success');
+  state.currentZone = 0;
+  renderZone();
+  showScreen('guia');
+}
+
+function renderZone() {
+  const zone = zones[state.currentZone];
+  document.getElementById('zoneHeader').textContent = zone.name;
+
+  const checklist = document.getElementById('checklist');
+  checklist.innerHTML = '';
+
+  zone.items.forEach((item, idx) => {
+    const li = document.createElement('li');
+    li.dataset.index = idx;
+    li.innerHTML = `
+      <div class="check"></div>
+      <div class="text">${item}</div>
+      <button class="photo-btn" onclick="event.stopPropagation(); takeItemPhoto(this)">📷</button>
+    `;
+    li.onclick = () => toggleItem(li);
+    checklist.appendChild(li);
+  });
+
+  updateProgress();
+}
+
+function toggleItem(li) {
+  li.classList.toggle('done');
+  updateProgress();
+}
+
+function takeItemPhoto(btn) {
+  btn.classList.toggle('taken');
+  if (btn.classList.contains('taken')) {
+    showToast('Foto guardada', 'success');
+  }
+}
+
+function updateProgress() {
+  const total = zones.reduce((sum, z) => sum + z.items.length, 0);
+  const done = document.querySelectorAll('.checklist li.done').length;
+  const currentDone = state.currentZone * 5 + done;
+  const pct = Math.min(100, (currentDone / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function nextZone() {
+  if (state.currentZone < zones.length - 1) {
+    state.currentZone++;
+    renderZone();
+    showToast('Zona completada. Siguiente: ' + zones[state.currentZone].name);
+  } else {
+    renderQuestions();
+    showScreen('preguntas');
+  }
+}
+
+/* ============================================================
+   6 PREGUNTAS FINALES
+   ============================================================ */
+function renderQuestions() {
+  const list = document.getElementById('questionsList');
+  list.innerHTML = '';
+
+  state.questions = finalQuestions.map(q => ({ text: q, answer: null }));
+
+  state.questions.forEach((q, idx) => {
+    const div = document.createElement('div');
+    div.className = 'question-item';
+    div.innerHTML = `
+      <p>${idx + 1}. ${q.text}</p>
+      <div class="options">
+        <button class="yes" onclick="answerQuestion(${idx}, 'yes', this)">Sí</button>
+        <button class="no" onclick="answerQuestion(${idx}, 'no', this)">No</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function answerQuestion(idx, answer, btn) {
+  state.questions[idx].answer = answer;
+  const parent = btn.parentElement;
+  parent.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function goToPhoto() {
+  const unanswered = state.questions.filter(q => q.answer === null).length;
+  if (unanswered > 0) {
+    showToast('Responde todas las preguntas', 'error');
+    return;
+  }
+  showScreen('foto');
+  setTimeout(initSignature, 100);
+}
+
+/* ============================================================
+   FOTO + FIRMA
+   ============================================================ */
+function takePhoto() {
+  // Simula tomar foto
+  state.photoTaken = true;
+  const preview = document.getElementById('photoPreview');
+  preview.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="%23E0E0E0"/><text x="50%" y="50%" font-family="sans-serif" font-size="20" fill="%234A4A4A" text-anchor="middle" dy=".3em">📷 Foto de la llave</text></svg>';
+  preview.classList.add('visible');
+  document.getElementById('cameraArea').style.display = 'none';
+  showToast('Foto guardada', 'success');
+}
+
+let signatureCtx = null;
+let isDrawing = false;
+
+function initSignature() {
+  const canvas = document.getElementById('signatureCanvas');
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+
+  signatureCtx = canvas.getContext('2d');
+  signatureCtx.strokeStyle = '#1F3A5F';
+  signatureCtx.lineWidth = 2;
+  signatureCtx.lineCap = 'round';
+  signatureCtx.lineJoin = 'round';
+
+  // Eventos mouse
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDraw);
+  canvas.addEventListener('mouseleave', stopDraw);
+
+  // Eventos táctiles
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e.touches[0]); });
+  canvas.addEventListener('touchmove', e => { e.preventDefault(); draw(e.touches[0]); });
+  canvas.addEventListener('touchend', stopDraw);
+}
+
+function startDraw(e) {
+  isDrawing = true;
+  const rect = signatureCtx.canvas.getBoundingClientRect();
+  signatureCtx.beginPath();
+  signatureCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+}
+
+function draw(e) {
+  if (!isDrawing) return;
+  const rect = signatureCtx.canvas.getBoundingClientRect();
+  signatureCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+  signatureCtx.stroke();
+}
+
+function stopDraw() {
+  isDrawing = false;
+}
+
+/* ============================================================
+   FINALIZAR TAREA
+   ============================================================ */
+function finishTask() {
+  if (!state.photoTaken) {
+    showToast('Toma la foto de la llave', 'error');
+    return;
+  }
+
+  showToast('Tarea cerrada. PDF generado', 'success');
+  showScreen('cerrada');
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastTimeout = null;
+
+function showToast(message, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'toast visible ' + type;
+
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove('visible');
+  }, 2500);
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  renderTasks();
+});
+</script>
+
+</body>
+</html>
