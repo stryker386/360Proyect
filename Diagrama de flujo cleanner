@@ -1,0 +1,23 @@
+flowchart TD
+    A[Login] --> B[Mi día]
+    B --> C{¿Tiene tareas?}
+    C -->|No| D[Mensaje: No tienes tareas hoy]
+    C -->|Sí| E[Seleccionar tarea]
+    E --> F[Ver detalle]
+    F --> G{¿Alerta roja?}
+    G -->|Sí| H[Confirmar lectura]
+    G -->|No| I[Escanear QR]
+    H --> I
+    I --> J[Iniciar reloj]
+    J --> K[Guía paso a paso]
+    K --> L[Baño]
+    L --> M[Cocina]
+    M --> N[Cuartos]
+    N --> O{¿Falta algo?}
+    O -->|Sí| P[Reportar falta]
+    O -->|No| Q[6 preguntas finales]
+    P --> Q
+    Q --> R[Foto llave]
+    R --> S[Firma]
+    S --> T[PDF generado]
+    T --> U[Tarea cerrada]
