@@ -1,0 +1,16 @@
+flowchart TD
+    A[Login] --> B[Mi ruta]
+    B --> C[Ver paradas]
+    C --> D[Seleccionar parada]
+    D --> E[Escanear QR]
+    E --> F{¿Tipo?}
+    F -->|Entrega| G[Confirmar entrega con foto]
+    F -->|Recogida| H[Recoger ropa sucia con foto]
+    G --> I[Tarea cerrada]
+    H --> I
+    I --> J{¿Más paradas?}
+    J -->|Sí| D
+    J -->|No| K[Ruta completada]
+    B --> L[Recibir alerta 30 min]
+    L --> M[Confirmar recepción]
+    M --> D
