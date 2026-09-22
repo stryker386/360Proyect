@@ -1,0 +1,13 @@
+flowchart TD
+    A[Login] --> B[Mis incidencias]
+    B --> C[Seleccionar incidencia]
+    C --> D[Ver detalle]
+    D --> E[Marcar en curso]
+    E --> F[Resolver]
+    F --> G[Tomar foto de resolución]
+    G --> H[Nota técnica]
+    H --> I[Marcar resuelto]
+    I --> J{¿Faltan piezas?}
+    J -->|Sí| K[Solicitar a bodega]
+    J -->|No| L[Incidencia cerrada]
+    K --> L
