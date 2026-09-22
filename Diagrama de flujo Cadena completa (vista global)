@@ -1,0 +1,31 @@
+flowchart TD
+    A[Checkout] --> B[Campanita]
+    B --> C[Tarea de limpieza]
+    B --> D[Tarea de linens]
+    B --> E[Tarea de entrega driver]
+    B --> F[Tarea de recogida driver]
+    
+    C --> G[Cleaner ejecuta]
+    G --> H{¿Falta algo?}
+    H -->|Sí| I[Reportar falta]
+    I --> D
+    H -->|No| J[6 preguntas]
+    J --> K[Foto llave + firma]
+    K --> L[Tarea cerrada]
+    
+    D --> M[Linens prepara]
+    M --> N[Notificar driver]
+    N --> E
+    
+    E --> O[Driver entrega con foto]
+    O --> P[Tarea cerrada]
+    
+    F --> Q[Driver recoge ropa sucia]
+    Q --> R[Tarea cerrada]
+    
+    L --> S[Property Manager verifica]
+    S --> T[Reporte a propietario]
+    
+    G --> U{¿Avería?}
+    U -->|Sí| V[Mantenimiento]
+    V --> W[Incidencia resuelta]
