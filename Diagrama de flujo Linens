@@ -1,0 +1,13 @@
+flowchart TD
+    A[Login] --> B[Mi día linens]
+    B --> C{¿Hay tareas?}
+    C -->|Sí| D[Ver detalle]
+    D --> E[Preparar linens]
+    E --> F[Verificar stock]
+    F --> G{¿Stock suficiente?}
+    G -->|Sí| H[Marcar preparado]
+    G -->|No| I[Alertar stock bajo]
+    H --> J[Notificar al driver]
+    I --> J
+    C -->|No| K[Ver stock general]
+    K --> L[Registrar entrada/salida]
