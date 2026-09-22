@@ -1,0 +1,17 @@
+flowchart TD
+    A[Login] --> B[Dashboard]
+    B --> C{¿Qué hacer?}
+    C -->|Repartir| D[Ver aptos de mañana]
+    D --> E[Ver carga de cleaners]
+    E --> F[Repartir automáticamente]
+    F --> G[Ajustar drag & drop]
+    G --> H[Publicar reparto]
+    H --> I[Notificar a cleaners]
+    C -->|Ver desviaciones| J[Lista de desviaciones]
+    J --> K{¿Reasignar?}
+    K -->|Sí| L[Reasignar tarea]
+    K -->|No| M[Contactar cleaner]
+    C -->|Alerta roja| N[Marcar apto]
+    N --> O[Definir motivo]
+    O --> P[Guardar alerta]
+    P --> Q[Notificar a cleaners y drivers]
