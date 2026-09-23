@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>360 Ops — Linens</title>
+<style>
+/* ============================================================
+   RESET Y VARIABLES
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --primary: #1F3A5F;
+  --secondary: #2E86AB;
+  --accent: #F18F01;
+  --danger: #C73E1D;
+  --success: #3B8EA5;
+  --light: #F5F5F5;
+  --mid: #E0E0E0;
+  --dark: #4A4A4A;
+  --white: #FFFFFF;
+  --okgreen: #D4EDDA;
+  --nored: #F8D7DA;
+  --warnyellow: #FFF3CD;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--light);
+  color: var(--dark);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+}
+
+/* ============================================================
+   CONTENEDOR MÓVIL
+   ============================================================ */
+.phone {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  background: var(--white);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  background: var(--primary);
+  color: var(--white);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header .logo {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header .logo span {
+  color: var(--accent);
+}
+
+.header .back {
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 8px;
+  display: none;
+}
+
+.header .back.visible {
+  display: block;
+}
+
+.header .help {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: var(--white);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+/* ============================================================
+   BANNER DE STOCK BAJO
+   ============================================================ */
+.stock-alert {
+  background: var(--warnyellow);
+  color: #856404;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border-bottom: 1px solid #ffeaa7;
+}
+
+.stock-alert .icon {
+  font-size: 18px;
+}
+
+/* ============================================================
+   CONTENIDO
+   ============================================================ */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  padding-bottom: 100px;
+}
+
+.screen {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 24px;
+  background: linear-gradient(160deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--white);
+}
+
+.login-container .logo-big {
+  font-size: 42px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: -1px;
+}
+
+.login-container .logo-big span {
+  color: var(--accent);
+}
+
+.login-container .subtitle {
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.85;
+  margin-bottom: 40px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  background: rgba(255,255,255,0.95);
+  color: var(--dark);
+}
+
+.form-group input:focus {
+  outline: 2px solid var(--accent);
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  font-family: var(--font);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--white);
+  margin-top: 8px;
+}
+
+.btn-primary:hover {
+  background: #d97d00;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--white);
+}
+
+.btn-secondary:hover {
+  background: #26719a;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--secondary);
+  color: var(--secondary);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.btn-success {
+  background: var(--success);
+  color: var(--white);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  opacity: 0.9;
+  margin-top: 16px;
+}
+
+/* ============================================================
+   RESUMEN DEL DÍA
+   ============================================================ */
+.greeting {
+  margin-bottom: 16px;
+}
+
+.greeting h2 {
+  font-size: 22px;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.greeting p {
+  font-size: 14px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  padding: 12px 8px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--secondary);
+}
+
+.summary-card.done::before { background: var(--success); }
+.summary-card.pending::before { background: var(--accent); }
+.summary-card.stock::before { background: var(--danger); }
+
+.summary-card .num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.summary-card .lbl {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--dark);
+  opacity: 0.7;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+.summary-card.done .num { color: var(--success); }
+.summary-card.pending .num { color: var(--accent); }
+.summary-card.stock .num { color: var(--danger); }
+
+/* ============================================================
+   TARJETA DE PREPARACIÓN
+   ============================================================ */
+.linen-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-left: 4px solid var(--secondary);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.linen-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.linen-card.urgent {
+  border-left-color: var(--accent);
+  background: linear-gradient(to right, #FFF8E1 0%, var(--white) 15%);
+}
+
+.linen-card.alert {
+  border-left-color: var(--danger);
+  background: linear-gradient(to right, var(--nored) 0%, var(--white) 15%);
+}
+
+.linen-card.done {
+  opacity: 0.6;
+  background: var(--okgreen);
+  border-left-color: var(--success);
+}
+
+.linen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.linen-address {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 15px;
+  flex: 1;
+}
+
+.linen-time {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.time-urgent {
+  background: var(--nored);
+  color: var(--danger);
+}
+
+.time-normal {
+  background: #E3F2FD;
+  color: #1565C0;
+}
+
+.time-done {
+  background: var(--okgreen);
+  color: #2E7D32;
+}
+
+.linen-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.linen-item-chip {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: var(--light);
+  color: var(--dark);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.linen-item-chip .qty {
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+.linen-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--mid);
+  font-size: 12px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+/* ============================================================
+   DETALLE DE PREPARACIÓN
+   ============================================================ */
+.detail-section {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.detail-section h3 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--secondary);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--light);
+  font-size: 15px;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row .label {
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.detail-row .value {
+  font-weight: 600;
+  color: var(--primary);
+  text-align: right;
+}
+
+/* ============================================================
+   CHECKLIST DE PREPARACIÓN
+   ============================================================ */
+.prep-checklist {
+  list-style: none;
+}
+
+.prep-checklist li {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: var(--light);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.prep-checklist li:hover {
+  border-color: var(--secondary);
+}
+
+.prep-checklist li.done {
+  background: var(--okgreen);
+  border-color: var(--success);
+}
+
+.prep-checklist li .check {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--mid);
+  border-radius: 6px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  background: var(--white);
+}
+
+.prep-checklist li.done .check {
+  background: var(--success);
+  border-color: var(--success);
+}
+
+.prep-checklist li .check::after {
+  content: '✓';
+  color: var(--white);
+  font-weight: bold;
+  display: none;
+}
+
+.prep-checklist li.done .check::after {
+  display: block;
+}
+
+.prep-checklist li .text {
+  flex: 1;
+  font-size: 15px;
+}
+
+.prep-checklist li .qty {
+  font-weight: 700;
+  color: var(--secondary);
+  font-size: 15px;
+  margin-left: 8px;
+}
+
+/* ============================================================
+   NOTA PARA DRIVER
+   ============================================================ */
+.note-area {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--mid);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: var(--font);
+  background: var(--white);
+  color: var(--dark);
+  resize: vertical;
+  min-height: 80px;
+  margin-bottom: 16px;
+}
+
+.note-area:focus {
+  outline: 2px solid var(--secondary);
+  border-color: transparent;
+}
+
+/* ============================================================
+   STOCK
+   ============================================================ */
+.stock-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stock-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.stock-card.low {
+  border-color: var(--danger);
+  background: linear-gradient(135deg, var(--nored) 0%, var(--white) 100%);
+}
+
+.stock-card .stock-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.stock-card .stock-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.stock-card .stock-qty {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--secondary);
+  line-height: 1;
+}
+
+.stock-card.low .stock-qty {
+  color: var(--danger);
+}
+
+.stock-card .stock-unit {
+  font-size: 11px;
+  color: var(--dark);
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+.stock-card .stock-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--danger);
+  color: var(--white);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ============================================================
+   MOVIMIENTOS
+   ============================================================ */
+.movement-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  font-size: 14px;
+  gap: 12px;
+}
+
+.movement-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.movement-icon.entrada {
+  background: var(--okgreen);
+  color: #2E7D32;
+}
+
+.movement-icon.salida {
+  background: var(--nored);
+  color: var(--danger);
+}
+
+.movement-info {
+  flex: 1;
+}
+
+.movement-name {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.movement-date {
+  font-size: 12px;
+  color: var(--dark);
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+.movement-qty {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--secondary);
+}
+
+.movement-qty.entrada {
+  color: var(--success);
+}
+
+.movement-qty.salida {
+  color: var(--danger);
+}
+
+/* ============================================================
+   BOTTOM NAV
+   ============================================================ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  background: var(--white);
+  border-top: 1px solid var(--mid);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  z-index: 100;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+}
+
+.bottom-nav button {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  font-size: 11px;
+  color: var(--dark);
+  opacity: 0.5;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: all 0.2s;
+  font-family: var(--font);
+  position: relative;
+}
+
+.bottom-nav button .nav-icon {
+  font-size: 20px;
+}
+
+.bottom-nav button.active {
+  opacity: 1;
+  color: var(--primary);
+}
+
+.bottom-nav button .badge-dot {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: var(--danger);
+  border-radius: 50%;
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--primary);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 2000;
+  box-shadow: var(--shadow-lg);
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+.toast.warn { background: var(--accent); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (min-width: 421px) {
+  body {
+    background: #E8EBEE;
+    padding: 20px 0;
+  }
+  .phone {
+    min-height: calc(100vh - 40px);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+}
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+.hidden { display: none !important; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.text-center { text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="header">
+    <button class="back" id="backBtn" onclick="goBack()">←</button>
+    <div class="logo">360<span>Ops</span></div>
+    <button class="help" onclick="showToast('Ayuda: soporte@360estates.com')">?</button>
+  </header>
+
+  <!-- ============================================================
+       BANNER STOCK BAJO (oculto por defecto)
+       ============================================================ -->
+  <div class="stock-alert hidden" id="stockAlert">
+    <span class="icon">⚠️</span>
+    <span id="stockAlertText">Stock bajo: sábanas de cama</span>
+  </div>
+
+  <!-- ============================================================
+       CONTENIDO
+       ============================================================ -->
+  <main class="content">
+
+    <!-- ============================================================
+         PANTALLA 1: LOGIN
+         ============================================================ -->
+    <section class="screen active" id="screen-login">
+      <div class="login-container" style="margin: -20px; padding: 40px 24px; min-height: calc(100vh - 60px);">
+        <div class="logo-big">360<span>Ops</span></div>
+        <p class="subtitle">Sábanas y toallas listas</p>
+
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <input type="email" id="email" placeholder="sofia@360estates.com" value="sofia@360estates.com">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" placeholder="••••••••" value="demo1234">
+        </div>
+
+        <button class="btn btn-primary" onclick="login()">Entrar</button>
+        <button class="btn-link" onclick="showToast('Contacta a tu líder')">¿Olvidaste tu contraseña?</button>
+        <button class="btn-link" onclick="showToast('Soporte: +34 900 000 000')">Ayuda sin iniciar sesión</button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PANTALLA 2: MI DÍA
+         ============================================================ -->
+    <section class="screen" id="screen-dia">
+      <div class="greeting">
+        <h2>Hola, Sofía</h2>
+        <p id="currentDate">Lunes 22 sep 2026</p>
+      </div>
+
+      <div class="summary-row">
+        <div class="summary-card">
+          <div class="num" id="sumTotal">5</div>
+          <div class="lbl">Total</div>
+        </div>
+        <div class="summary-card done">
+          <div class="num" id="sumDone">2</div>
+          <div class="lbl">Hechas</div>
+        </div>
+        <div class="summary-card pending">
+          <div class="num" id="sumPending">3</div>
+          <div class="lbl">Pendientes</div>
+        </div>
+      </div>
+
+      <h3 style="font-size: 16px; color: var(--primary); margin-bottom: 12px; font-weight: 700;">
+        🧺 Preparaciones de hoy
+      </h3>
+
+      <div id="linenList"></div>
+    </section>
+
+    <!-- ============================================================
+         PANTALLA 3: DETALLE DE PREPARACIÓN
+         ============================================================ -->
+    <section class="screen" id="screen-detalle">
+      <div class="detail-section">
+        <h3>📍 Apartamento</h3>
+        <div class="detail-row">
+          <span class="label">Dirección</span>
+          <span class="value" id="detailAddress">Calle Mayor 12, 3B</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Hora de entrega</span>
+          <span class="value" id="detailTime">14:00</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Cleaner</span>
+          <span class="value" id="detailCleaner">María López</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Motivo</span>
+          <span class="value" id="detailReason">Falta de toallas</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h3>📦 Preparar</h3>
+        <ul class="prep-checklist" id="prepChecklist"></ul>
+      </div>
+
+      <div class="detail-section">
+        <h3>📝 Nota para el driver</h3>
+        <textarea class="note-area" id="driverNote" placeholder="Ej: dejar en conserjería si no hay nadie."></textarea>
+      </div>
+
+      <button class="btn btn-success btn-block" onclick="markPrepared()">
+        ✅ Marcar como preparado
+      </button>
+    </section>
+
+    <!-- ============================================================
+         PANTALLA 4: STOCK
+         ============================================================ -->
+    <section class="screen" id="screen-stock">
+      <h2 style="font-size: 20px; color: var(--primary); margin-bottom: 16px;">
+        📦 Stock en bodega
+      </h2>
+
+      <div class="stock-grid" id="stockGrid"></div>
+
+      <h3 style="font-size: 16px; color: var(--primary); margin-bottom: 12px; font-weight: 700;">
+        🔄 Movimientos recientes
+      </h3>
+
+      <div id="movementsList"></div>
+    </section>
+
+    <!-- ============================================================
+         PANTALLA 5: HISTORIAL
+         ============================================================ -->
+    <section class="screen" id="screen-historial">
+      <h2 style="font-size: 20px; color: var(--primary); margin-bottom: 16px;">
+        📋 Historial de hoy
+      </h2>
+      <div id="historyList"></div>
+    </section>
+
+    <!-- ============================================================
+         PANTALLA 6: PERFIL
+         ============================================================ -->
+    <section class="screen" id="screen-perfil">
+      <div style="text-align: center; padding: 20px 0 30px;">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--accent); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 28px; margin: 0 auto 12px;">
+          SM
+        </div>
+        <h2 style="font-size: 20px; color: var(--primary);">Sofía Martín</h2>
+        <p style="font-size: 14px; opacity: 0.7;">Linens · Turno mañana</p>
+      </div>
+
+      <div class="detail-section">
+        <h3>📊 Estadísticas</h3>
+        <div class="detail-row">
+          <span class="label">Preparaciones hoy</span>
+          <span class="value">5</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Completadas</span>
+          <span class="value">2</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Tiempo medio</span>
+          <span class="value">8 min</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Pendientes</span>
+          <span class="value">3</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h3>⚙️ Configuración</h3>
+        <button class="btn btn-outline btn-block mb-1" onclick="showToast('Notificaciones activadas')">
+          🔔 Notificaciones
+        </button>
+        <button class="btn btn-outline btn-block" onclick="logout()">
+          🚪 Cerrar sesión
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       BOTTOM NAV
+       ============================================================ -->
+  <nav class="bottom-nav" id="bottomNav" style="display: none;">
+    <button class="active" onclick="showTab('dia', this)">
+      <span class="nav-icon">🧺</span>
+      Mi día
+      <span class="badge-dot" id="navDot"></span>
+    </button>
+    <button onclick="showTab('stock', this)">
+      <span class="nav-icon">📦</span>
+      Stock
+    </button>
+    <button onclick="showTab('historial', this)">
+      <span class="nav-icon">📋</span>
+      Historial
+    </button>
+    <button onclick="showTab('perfil', this)">
+      <span class="nav-icon">👤</span>
+      Perfil
+    </button>
+  </nav>
+
+</div>
+
+<!-- ============================================================
+     TOAST
+     ============================================================ -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ESTADO
+   ============================================================ */
+const state = {
+  currentScreen: 'login',
+  currentLinen: null,
+  linens: [],
+  stock: [],
+  movements: [],
+};
+
+/* ============================================================
+   DATOS DEMO
+   ============================================================ */
+const linensData = [
+  {
+    id: 1,
+    address: 'Calle Mayor 12, 3B',
+    time: '14:00',
+    cleaner: 'María López',
+    reason: 'Falta de toallas',
+    urgent: true,
+    items: [
+      { name: 'Toallas de baño', qty: 4, done: false },
+      { name: 'Toallas de mano', qty: 2, done: false },
+    ],
+    done: false,
+  },
+  {
+    id: 2,
+    address: 'Av. del Puerto 45, 1A',
+    time: '14:30',
+    cleaner: 'Ana García',
+    reason: 'Cambio de sábanas',
+    urgent: false,
+    items: [
+      { name: 'Sábanas de cama', qty: 2, done: false },
+      { name: 'Fundas de almohada', qty: 2, done: false },
+    ],
+    done: false,
+  },
+  {
+    id: 3,
+    address: 'Plaza España 8, 5C',
+    time: '15:30',
+    cleaner: 'Lucía Fernández',
+    reason: 'Falta de sábanas',
+    urgent: true,
+    items: [
+      { name: 'Sábanas de cama', qty: 2, done: false },
+      { name: 'Toallas de baño', qty: 4, done: false },
+    ],
+    done: false,
+  },
+  {
+    id: 4,
+    address: 'Calle Sol 22, 2D',
+    time: '11:00',
+    cleaner: 'Carmen Díaz',
+    reason: 'Cambio completo',
+    urgent: false,
+    items: [
+      { name: 'Sábanas de cama', qty: 2, done: true },
+      { name: 'Toallas de baño', qty: 4, done: true },
+    ],
+    done: true,
+  },
+  {
+    id: 5,
+    address: 'Gran Vía 100, 4A',
+    time: '10:30',
+    cleaner: 'María López',
+    reason: 'Falta de toallas',
+    urgent: false,
+    items: [
+      { name: 'Toallas de baño', qty: 2, done: true },
+    ],
+    done: true,
+  },
+];
+
+const stockData = [
+  { id: 1, name: 'Sábanas de cama', icon: '🛏️', qty: 45, unit: 'unidades', low: false },
+  { id: 2, name: 'Toallas de baño', icon: '🧻', qty: 80, unit: 'unidades', low: false },
+  { id: 3, name: 'Toallas de mano', icon: '🤲', qty: 12, unit: 'unidades', low: true },
+  { id: 4, name: 'Fundas de almohada', icon: '🛏️', qty: 38, unit: 'unidades', low: false },
+  { id: 5, name: 'Almohadas', icon: '💤', qty: 8, unit: 'unidades', low: true },
+  { id: 6, name: 'Mantas', icon: '🧣', qty: 22, unit: 'unidades', low: false },
+];
+
+const movementsData = [
+  {
+    id: 1,
+    type: 'salida',
+    name: 'Toallas de baño',
+    qty: 4,
+    date: 'Hoy, 13:45',
+    reason: 'Preparación Calle Mayor 12, 3B',
+  },
+  {
+    id: 2,
+    type: 'entrada',
+    name: 'Sábanas de cama',
+    qty: 20,
+    date: 'Hoy, 10:00',
+    reason: 'Reposición de lavandería',
+  },
+  {
+    id: 3,
+    type: 'salida',
+    name: 'Sábanas de cama',
+    qty: 2,
+    date: 'Hoy, 09:30',
+    reason: 'Preparación Av. del Puerto 45, 1A',
+  },
+  {
+    id: 4,
+    type: 'salida',
+    name: 'Toallas de mano',
+    qty: 6,
+    date: 'Ayer, 18:20',
+    reason: 'Preparación Plaza España 8, 5C',
+  },
+  {
+    id: 5,
+    type: 'entrada',
+    name: 'Fundas de almohada',
+    qty: 15,
+    date: 'Ayer, 15:00',
+    reason: 'Reposición de lavandería',
+  },
+];
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screenId).classList.add('active');
+  state.currentScreen = screenId;
+
+  const backBtn = document.getElementById('backBtn');
+  const noBack = ['login', 'dia', 'stock', 'historial', 'perfil'];
+  if (noBack.includes(screenId)) {
+    backBtn.classList.remove('visible');
+  } else {
+    backBtn.classList.add('visible');
+  }
+
+  const bottomNav = document.getElementById('bottomNav');
+  if (screenId === 'login') {
+    bottomNav.style.display = 'none';
+  } else {
+    bottomNav.style.display = 'flex';
+  }
+
+  document.querySelector('.content').scrollTop = 0;
+}
+
+function showTab(tab, btn) {
+  document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  showScreen(tab);
+
+  if (tab === 'stock') renderStock();
+  if (tab === 'historial') renderHistory();
+}
+
+function goBack() {
+  const order = ['login', 'dia', 'detalle'];
+  const idx = order.indexOf(state.currentScreen);
+  if (idx > 1) {
+    showScreen(order[idx - 1]);
+  } else {
+    showScreen('dia');
+  }
+}
+
+function goHome() {
+  renderLinens();
+  showScreen('dia');
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+function login() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  if (!email || !password) {
+    showToast('Completa todos los campos', 'error');
+    return;
+  }
+
+  showToast('Bienvenida, Sofía', 'success');
+  state.linens = JSON.parse(JSON.stringify(linensData));
+  state.stock = JSON.parse(JSON.stringify(stockData));
+  state.movements = JSON.parse(JSON.stringify(movementsData));
+
+  renderLinens();
+  checkStockAlert();
+  showScreen('dia');
+  updateNavDot();
+}
+
+/* ============================================================
+   MI DÍA
+   ============================================================ */
+function renderLinens() {
+  const list = document.getElementById('linenList');
+  list.innerHTML = '';
+
+  state.linens.forEach(linen => {
+    const card = document.createElement('div');
+    card.className = 'linen-card';
+    if (linen.urgent && !linen.done) card.classList.add('urgent');
+    if (linen.done) card.classList.add('done');
+    card.onclick = () => openLinen(linen);
+
+    const timeClass = linen.done ? 'time-done' : (linen.urgent ? 'time-urgent' : 'time-normal');
+
+    card.innerHTML = `
+      <div class="linen-header">
+        <div class="linen-address">${linen.address}</div>
+        <span class="linen-time ${timeClass}">
+          ${linen.done ? '✓ Hecho' : linen.time}
+        </span>
+      </div>
+      <div style="font-size: 13px; color: var(--dark); opacity: 0.7;">
+        Motivo: ${linen.reason} · Cleaner: ${linen.cleaner}
+      </div>
+      <div class="linen-items">
+        ${linen.items.map(item => `
+          <span class="linen-item-chip">
+            ${item.name} <span class="qty">x${item.qty}</span>
+          </span>
+        `).join('')}
+      </div>
+      <div class="linen-footer">
+        <span>${linen.items.length} ítem${linen.items.length > 1 ? 's' : ''}</span>
+        <span>${linen.done ? '✅ Preparado' : 'Toca para preparar →'}</span>
+      </div>
+    `;
+
+    list.appendChild(card);
+  });
+
+  updateSummary();
+
+  const now = new Date();
+  const options = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+  document.getElementById('currentDate').textContent =
+    now.toLocaleDateString('es-ES', options).replace(/^\w/, c => c.toUpperCase());
+}
+
+function updateSummary() {
+  const total = state.linens.length;
+  const done = state.linens.filter(l => l.done).length;
+  const pending = total - done;
+
+  document.getElementById('sumTotal').textContent = total;
+  document.getElementById('sumDone').textContent = done;
+  document.getElementById('sumPending').textContent = pending;
+}
+
+function updateNavDot() {
+  const pending = state.linens.filter(l => !l.done).length;
+  const dot = document.getElementById('navDot');
+  dot.style.display = pending > 0 ? 'block' : 'none';
+}
+
+/* ============================================================
+   DETALLE DE PREPARACIÓN
+   ============================================================ */
+function openLinen(linen) {
+  if (linen.done) {
+    showToast('Esta preparación ya está completada', 'warn');
+    return;
+  }
+
+  state.currentLinen = linen;
+
+  document.getElementById('detailAddress').textContent = linen.address;
+  document.getElementById('detailTime').textContent = linen.time;
+  document.getElementById('detailCleaner').textContent = linen.cleaner;
+  document.getElementById('detailReason').textContent = linen.reason;
+  document.getElementById('driverNote').value = '';
+
+  // Checklist
+  const checklist = document.getElementById('prepChecklist');
+  checklist.innerHTML = '';
+  linen.items.forEach((item, idx) => {
+    const li = document.createElement('li');
+    li.className = item.done ? 'done' : '';
+    li.onclick = () => toggleItem(li, item);
+    li.innerHTML = `
+      <div class="check"></div>
+      <div class="text">${item.name}</div>
+      <div class="qty">x${item.qty}</div>
+    `;
+    checklist.appendChild(li);
+  });
+
+  showScreen('detalle');
+}
+
+function toggleItem(li, item) {
+  item.done = !item.done;
+  li.classList.toggle('done');
+}
+
+/* ============================================================
+   MARCAR COMO PREPARADO
+   ============================================================ */
+function markPrepared() {
+  const linen = state.currentLinen;
+
+  // Verificar que todos los ítems estén marcados
+  const allDone = linen.items.every(i => i.done);
+  if (!allDone) {
+    showToast('Marca todos los ítems como preparados', 'error');
+    return;
+  }
+
+  linen.done = true;
+  linen.note = document.getElementById('driverNote').value.trim();
+
+  // Registrar movimiento de salida de stock
+  linen.items.forEach(item => {
+    state.movements.unshift({
+      id: Date.now() + Math.random(),
+      type: 'salida',
+      name: item.name,
+      qty: item.qty,
+      date: 'Ahora',
+      reason: `Preparación ${linen.address}`,
+    });
+
+    // Descontar del stock
+    const stockItem = state.stock.find(s => s.name === item.name);
+    if (stockItem) {
+      stockItem.qty = Math.max(0, stockItem.qty - item.qty);
+      if (stockItem.qty < 15) stockItem.low = true;
+    }
+  });
+
+  showToast('Preparado. Driver notificado', 'success');
+
+  setTimeout(() => {
+    renderLinens();
+    checkStockAlert();
+    updateNavDot();
+    showScreen('dia');
+  }, 800);
+}
+
+/* ============================================================
+   STOCK
+   ============================================================ */
+function renderStock() {
+  const grid = document.getElementById('stockGrid');
+  grid.innerHTML = '';
+
+  state.stock.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'stock-card' + (item.low ? ' low' : '');
+    card.innerHTML = `
+      ${item.low ? '<span class="stock-badge">Bajo</span>' : ''}
+      <div class="stock-icon">${item.icon}</div>
+      <div class="stock-name">${item.name}</div>
+      <div class="stock-qty">${item.qty}</div>
+      <div class="stock-unit">${item.unit}</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Movimientos
+  const movList = document.getElementById('movementsList');
+  movList.innerHTML = '';
+  state.movements.slice(0, 8).forEach(mov => {
+    const div = document.createElement('div');
+    div.className = 'movement-item';
+    div.innerHTML = `
+      <div class="movement-icon ${mov.type}">
+        ${mov.type === 'entrada' ? '↓' : '↑'}
+      </div>
+      <div class="movement-info">
+        <div class="movement-name">${mov.name}</div>
+        <div class="movement-date">${mov.date} · ${mov.reason}</div>
+      </div>
+      <div class="movement-qty ${mov.type}">
+        ${mov.type === 'entrada' ? '+' : '−'}${mov.qty}
+      </div>
+    `;
+    movList.appendChild(div);
+  });
+}
+
+function checkStockAlert() {
+  const lowStock = state.stock.filter(s => s.low);
+  const alert = document.getElementById('stockAlert');
+  const text = document.getElementById('stockAlertText');
+
+  if (lowStock.length > 0) {
+    alert.classList.remove('hidden');
+    text.textContent = `Stock bajo: ${lowStock.map(s => s.name).join(', ')}`;
+  } else {
+    alert.classList.add('hidden');
+  }
+}
+
+/* ============================================================
+   HISTORIAL
+   ============================================================ */
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  list.innerHTML = '';
+
+  const done = state.linens.filter(l => l.done);
+
+  if (done.length === 0) {
+    list.innerHTML = '<p style="text-align: center; opacity: 0.5; padding: 40px;">Aún no has preparado nada hoy</p>';
+    return;
+  }
+
+  done.forEach(linen => {
+    const card = document.createElement('div');
+    card.className = 'linen-card done';
+    card.innerHTML = `
+      <div class="linen-header">
+        <div class="linen-address">${linen.address}</div>
+        <span class="linen-time time-done">✓ Hecho</span>
+      </div>
+      <div style="font-size: 13px; color: var(--dark); opacity: 0.7;">
+        ${linen.reason} · ${linen.cleaner}
+      </div>
+      <div class="linen-items">
+        ${linen.items.map(item => `
+          <span class="linen-item-chip">
+            ${item.name} <span class="qty">x${item.qty}</span>
+          </span>
+        `).join('')}
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+function logout() {
+  if (!confirm('¿Cerrar sesión?')) return;
+  state.linens = [];
+  state.currentLinen = null;
+  document.getElementById('bottomNav').style.display = 'none';
+  document.getElementById('stockAlert').classList.add('hidden');
+  showScreen('login');
+  showToast('Sesión cerrada', 'warn');
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastTimeout = null;
+
+function showToast(message, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'toast visible ' + type;
+
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove('visible');
+  }, 2500);
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  state.linens = JSON.parse(JSON.stringify(linensData));
+  state.stock = JSON.parse(JSON.stringify(stockData));
+  state.movements = JSON.parse(JSON.stringify(movementsData));
+  renderLinens();
+});
+</script>
+
+</body>
+</html>

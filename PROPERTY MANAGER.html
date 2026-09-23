@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>360 Ops — Property Manager</title>
+<style>
+/* ============================================================
+   RESET Y VARIABLES
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --primary: #1F3A5F;
+  --secondary: #2E86AB;
+  --accent: #F18F01;
+  --danger: #C73E1D;
+  --success: #3B8EA5;
+  --light: #F5F5F5;
+  --mid: #E0E0E0;
+  --dark: #4A4A4A;
+  --white: #FFFFFF;
+  --okgreen: #D4EDDA;
+  --nored: #F8D7DA;
+  --warnyellow: #FFF3CD;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: #E8EBEE;
+  color: var(--dark);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 0;
+}
+
+/* ============================================================
+   CONTENEDOR TIPO TABLET/DESKTOP
+   ============================================================ */
+.app {
+  width: 100%;
+  max-width: 1200px;
+  min-height: calc(100vh - 40px);
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  background: var(--primary);
+  color: var(--white);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header .logo {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header .logo span {
+  color: var(--accent);
+}
+
+.header .role-badge {
+  background: rgba(255,255,255,0.15);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header .user-info {
+  text-align: right;
+  font-size: 13px;
+}
+
+.header .user-info .name {
+  font-weight: 600;
+}
+
+.header .user-info .date {
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+.header .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.header .help {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: var(--white);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.header .help:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ============================================================
+   NAVEGACIÓN TABS
+   ============================================================ */
+.tabs {
+  display: flex;
+  background: var(--white);
+  border-bottom: 1px solid var(--mid);
+  padding: 0 24px;
+  overflow-x: auto;
+  position: sticky;
+  top: 72px;
+  z-index: 90;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  padding: 16px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark);
+  opacity: 0.6;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: var(--font);
+}
+
+.tabs button:hover {
+  opacity: 1;
+}
+
+.tabs button.active {
+  opacity: 1;
+  color: var(--primary);
+  border-bottom-color: var(--accent);
+}
+
+/* ============================================================
+   CONTENIDO
+   ============================================================ */
+.content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.screen {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   KPIs
+   ============================================================ */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--secondary);
+}
+
+.kpi-card.alert::before { background: var(--danger); }
+.kpi-card.warn::before { background: var(--accent); }
+.kpi-card.success::before { background: var(--success); }
+
+.kpi-card .kpi-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--dark);
+  opacity: 0.6;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.kpi-card .kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.kpi-card .kpi-change {
+  font-size: 12px;
+  margin-top: 8px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+/* ============================================================
+   SECCIONES
+   ============================================================ */
+.section {
+  margin-bottom: 32px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.section-header h2 {
+  font-size: 20px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.section-header .actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background: #d97d00;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--white);
+}
+
+.btn-secondary:hover {
+  background: #26719a;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--mid);
+  color: var(--dark);
+}
+
+.btn-outline:hover {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.btn-danger:hover {
+  background: #a83216;
+}
+
+.btn-success {
+  background: var(--success);
+  color: var(--white);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn-block {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ============================================================
+   FILTROS
+   ============================================================ */
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.filter-chip {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  color: var(--dark);
+  font-family: var(--font);
+}
+
+.filter-chip:hover {
+  border-color: var(--secondary);
+}
+
+.filter-chip.active {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+/* ============================================================
+   GRID DE PROPIEDADES
+   ============================================================ */
+.properties-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.property-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.property-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.property-card.alert {
+  border-color: var(--danger);
+}
+
+.property-card.alert::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--danger);
+  z-index: 2;
+}
+
+.property-card.warning::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--accent);
+  z-index: 2;
+}
+
+.property-image {
+  height: 140px;
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 48px;
+}
+
+.property-image .status-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge-ok {
+  background: var(--okgreen);
+  color: #2E7D32;
+}
+
+.status-badge-warn {
+  background: var(--warnyellow);
+  color: #856404;
+}
+
+.status-badge-alert {
+  background: var(--nored);
+  color: var(--danger);
+}
+
+.property-body {
+  padding: 16px;
+}
+
+.property-address {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.property-owner {
+  font-size: 13px;
+  color: var(--dark);
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+.property-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--dark);
+  opacity: 0.7;
+  padding-top: 12px;
+  border-top: 1px solid var(--light);
+  flex-wrap: wrap;
+}
+
+.property-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ============================================================
+   DETALLE DE APARTAMENTO
+   ============================================================ */
+.property-header {
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+  color: var(--white);
+  padding: 24px;
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.property-header h2 {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.property-header p {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.property-header .actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+
+.panel-header {
+  background: var(--light);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--mid);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-header h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.panel-body {
+  padding: 16px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--light);
+  font-size: 14px;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row .label {
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.detail-row .value {
+  font-weight: 600;
+  color: var(--primary);
+  text-align: right;
+}
+
+/* ============================================================
+   GALERÍA DE FOTOS
+   ============================================================ */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+}
+
+.photo-thumb {
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.photo-thumb:hover {
+  border-color: var(--secondary);
+  transform: scale(1.02);
+}
+
+.photo-thumb .photo-label {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  background: rgba(0,0,0,0.6);
+  color: var(--white);
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   INCIDENCIAS ABIERTAS
+   ============================================================ */
+.incident-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--light);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  font-size: 14px;
+  border-left: 4px solid var(--accent);
+}
+
+.incident-item.alta {
+  border-left-color: var(--danger);
+  background: var(--nored);
+}
+
+.incident-item .incident-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.incident-item .incident-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.incident-item .incident-title {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.incident-item .incident-desc {
+  font-size: 12px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.incident-item .incident-status {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: var(--warnyellow);
+  color: #856404;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-overlay.visible {
+  display: flex;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalIn 0.3s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal h3 {
+  font-size: 18px;
+  color: var(--primary);
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.modal .form-group {
+  margin-bottom: 16px;
+}
+
+.modal .form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 6px;
+}
+
+.modal .form-group input,
+.modal .form-group select,
+.modal .form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--mid);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font);
+  background: var(--white);
+  color: var(--dark);
+}
+
+.modal .form-group input:focus,
+.modal .form-group select:focus,
+.modal .form-group textarea:focus {
+  outline: 2px solid var(--secondary);
+  border-color: transparent;
+}
+
+.modal .form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal .modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--primary);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 2000;
+  box-shadow: var(--shadow-lg);
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+.toast.warn { background: var(--accent); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+  .header {
+    padding: 12px 16px;
+  }
+  .header .user-info {
+    display: none;
+  }
+  .content {
+    padding: 16px;
+  }
+  .kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kpi-card .kpi-value {
+    font-size: 24px;
+  }
+  .tabs {
+    padding: 0 16px;
+  }
+  .tabs button {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+  .property-header {
+    padding: 16px;
+  }
+  .property-header h2 {
+    font-size: 18px;
+  }
+}
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+.hidden { display: none !important; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.text-center { text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">360<span>Ops</span></div>
+      <span class="role-badge">Property Manager</span>
+    </div>
+    <div class="header-right">
+      <div class="user-info">
+        <div class="name">Laura Sánchez</div>
+        <div class="date" id="headerDate">Lunes 22 sep 2026</div>
+      </div>
+      <div class="avatar">LS</div>
+      <button class="help" onclick="showToast('Ayuda: soporte@360estates.com')">?</button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       TABS
+       ============================================================ -->
+  <nav class="tabs" id="tabs">
+    <button class="active" onclick="showTab('dashboard', this)">📊 Dashboard</button>
+    <button onclick="showTab('propiedades', this)">🏠 Propiedades</button>
+    <button onclick="showTab('incidencias', this)">⚠️ Incidencias</button>
+    <button onclick="showTab('reportes', this)">📄 Reportes</button>
+  </nav>
+
+  <!-- ============================================================
+       CONTENIDO
+       ============================================================ -->
+  <main class="content">
+
+    <!-- ============================================================
+         TAB 1: DASHBOARD
+         ============================================================ -->
+    <section class="screen active" id="screen-dashboard">
+      <div class="kpis">
+        <div class="kpi-card">
+          <div class="kpi-label">Propiedades gestionadas</div>
+          <div class="kpi-value" id="kpiTotal">24</div>
+          <div class="kpi-change">Todas activas</div>
+        </div>
+        <div class="kpi-card success">
+          <div class="kpi-label">Estado OK</div>
+          <div class="kpi-value" id="kpiOk">18</div>
+          <div class="kpi-change">75% del total</div>
+        </div>
+        <div class="kpi-card warn">
+          <div class="kpi-label">Requieren atención</div>
+          <div class="kpi-value" id="kpiWarn">4</div>
+          <div class="kpi-change">2 con incidencias</div>
+        </div>
+        <div class="kpi-card alert">
+          <div class="kpi-label">Alertas rojas</div>
+          <div class="kpi-value" id="kpiAlert">2</div>
+          <div class="kpi-change">Requieren revisión</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>🏠 Propiedades que requieren atención</h2>
+          <div class="actions">
+            <button class="btn btn-outline btn-sm" onclick="showTab('propiedades', document.querySelectorAll('.tabs button')[1])">
+              Ver todas
+            </button>
+          </div>
+        </div>
+        <div class="properties-grid" id="attentionGrid"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>🔴 Alertas rojas activas</h2>
+          <div class="actions">
+            <button class="btn btn-danger btn-sm" onclick="openAlertModal()">
+              + Nueva alerta
+            </button>
+          </div>
+        </div>
+        <div id="alertRedList"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>📸 Últimas verificaciones</h2>
+        </div>
+        <div id="recentVerifications"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TAB 2: PROPIEDADES
+         ============================================================ -->
+    <section class="screen" id="screen-propiedades">
+      <div class="section-header">
+        <h2>🏠 Mis propiedades</h2>
+        <div class="actions">
+          <button class="btn btn-secondary btn-sm" onclick="showToast('Exportando lista...')">
+            📥 Exportar
+          </button>
+        </div>
+      </div>
+
+      <div class="filters">
+        <button class="filter-chip active" onclick="filterProperties('all', this)">Todas</button>
+        <button class="filter-chip" onclick="filterProperties('ok', this)">OK</button>
+        <button class="filter-chip" onclick="filterProperties('warn', this)">Atención</button>
+        <button class="filter-chip" onclick="filterProperties('alert', this)">Alerta roja</button>
+      </div>
+
+      <div class="properties-grid" id="propertiesGrid"></div>
+    </section>
+
+    <!-- ============================================================
+         TAB 3: INCIDENCIAS
+         ============================================================ -->
+    <section class="screen" id="screen-incidencias">
+      <div class="section-header">
+        <h2>⚠️ Incidencias abiertas</h2>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm" onclick="showToast('Filtros')">
+            🔍 Filtrar
+          </button>
+        </div>
+      </div>
+      <div id="incidentsList"></div>
+    </section>
+
+    <!-- ============================================================
+         TAB 4: REPORTES
+         ============================================================ -->
+    <section class="screen" id="screen-reportes">
+      <div class="section-header">
+        <h2>📄 Generar reporte</h2>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body">
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 6px;">
+              Tipo de reporte
+            </label>
+            <select id="reportType" style="width: 100%; padding: 10px 12px; border: 1px solid var(--mid); border-radius: var(--radius-sm); font-size: 14px; font-family: var(--font);">
+              <option>Reporte por propiedad</option>
+              <option>Reporte por propietario</option>
+              <option>Reporte mensual</option>
+              <option>Reporte de incidencias</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 6px;">
+              Propiedad
+            </label>
+            <select id="reportProperty" style="width: 100%; padding: 10px 12px; border: 1px solid var(--mid); border-radius: var(--radius-sm); font-size: 14px; font-family: var(--font);">
+              <option>Todas</option>
+              <option>Calle Mayor 12, 3B</option>
+              <option>Av. del Puerto 45, 1A</option>
+              <option>Plaza España 8, 5C</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 6px;">
+              Periodo
+            </label>
+            <select id="reportPeriod" style="width: 100%; padding: 10px 12px; border: 1px solid var(--mid); border-radius: var(--radius-sm); font-size: 14px; font-family: var(--font);">
+              <option>Últimos 7 días</option>
+              <option>Últimos 30 días</option>
+              <option>Mes actual</option>
+              <option>Personalizado</option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary btn-block" onclick="generateReport()">
+            📄 Generar PDF
+          </button>
+        </div>
+      </div>
+
+      <div class="section mt-2">
+        <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+          Reportes recientes
+        </h3>
+        <div id="recentReports"></div>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- ============================================================
+     MODAL: ALERTA ROJA
+     ============================================================ -->
+<div class="modal-overlay" id="alertModal">
+  <div class="modal">
+    <h3>🔴 Marcar alerta roja</h3>
+
+    <div class="form-group">
+      <label for="alertApt">Propiedad</label>
+      <select id="alertApt">
+        <option value="">Selecciona una propiedad</option>
+        <option>Calle Mayor 12, 3B</option>
+        <option>Av. del Puerto 45, 1A</option>
+        <option>Plaza España 8, 5C</option>
+        <option>Calle Sol 22, 2D</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="alertReason">Motivo</label>
+      <select id="alertReason">
+        <option value="">Selecciona el motivo</option>
+        <option>Propietario complicado</option>
+        <option>Huésped complicado</option>
+        <option>Ubicación difícil</option>
+        <option>Historial de incidencias</option>
+        <option>Acceso complejo</option>
+        <option>Otro</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="alertNotes">Instrucciones especiales</label>
+      <textarea id="alertNotes" placeholder="Ej: no usar ascensor, propietario vive dentro..."></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeAlertModal()">Cancelar</button>
+      <button class="btn btn-danger" onclick="saveAlertRed()">Guardar alerta</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: DETALLE DE PROPIEDAD
+     ============================================================ -->
+<div class="modal-overlay" id="propertyModal">
+  <div class="modal" style="max-width: 700px;">
+    <div id="propertyModalContent"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TOAST
+     ============================================================ -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ESTADO
+   ============================================================ */
+const state = {
+  currentTab: 'dashboard',
+  properties: [],
+  filter: 'all',
+  alertsRed: [],
+  incidents: [],
+  reports: [],
+};
+
+/* ============================================================
+   DATOS DEMO
+   ============================================================ */
+const propertiesData = [
+  {
+    id: 1,
+    address: 'Calle Mayor 12, 3B',
+    owner: 'Juan Pérez',
+    status: 'ok',
+    lastCleaning: 'Hoy, 11:30',
+    cleaner: 'María López',
+    type: 'Limpieza',
+    incidents: 0,
+    alertRed: false,
+    photos: 8,
+    linens: 'Completo',
+  },
+  {
+    id: 2,
+    address: 'Av. del Puerto 45, 1A',
+    owner: 'Carmen Ruiz',
+    status: 'alert',
+    lastCleaning: 'Hoy, 09:15',
+    cleaner: 'Ana García',
+    type: 'Refresh',
+    incidents: 2,
+    alertRed: true,
+    alertReason: 'Propietario complicado. Revisa todo al detalle.',
+    photos: 6,
+    linens: 'Falta 1 toalla',
+  },
+  {
+    id: 3,
+    address: 'Plaza España 8, 5C',
+    owner: 'Miguel López',
+    status: 'warn',
+    lastCleaning: 'Hoy, 12:00',
+    cleaner: 'Lucía Fernández',
+    type: 'Deep cleaning',
+    incidents: 1,
+    alertRed: false,
+    photos: 12,
+    linens: 'Completo',
+  },
+  {
+    id: 4,
+    address: 'Calle Sol 22, 2D',
+    owner: 'Ana Martín',
+    status: 'ok',
+    lastCleaning: 'Ayer, 17:20',
+    cleaner: 'Carmen Díaz',
+    type: 'Limpieza',
+    incidents: 0,
+    alertRed: false,
+    photos: 8,
+    linens: 'Completo',
+  },
+  {
+    id: 5,
+    address: 'Gran Vía 100, 4A',
+    owner: 'Pedro Gómez',
+    status: 'warn',
+    lastCleaning: 'Hoy, 10:30',
+    cleaner: 'María López',
+    type: 'Refresh',
+    incidents: 1,
+    alertRed: false,
+    photos: 5,
+    linens: 'Falta 1 funda',
+  },
+  {
+    id: 6,
+    address: 'Calle Luna 5, 1B',
+    owner: 'Sofía Torres',
+    status: 'alert',
+    lastCleaning: 'Ayer, 16:00',
+    cleaner: 'Ana García',
+    type: 'Limpieza',
+    incidents: 1,
+    alertRed: true,
+    alertReason: 'Acceso complejo. Sin ascensor.',
+    photos: 7,
+    linens: 'Completo',
+  },
+  {
+    id: 7,
+    address: 'Av. Mar 33, 6C',
+    owner: 'Luis Fernández',
+    status: 'ok',
+    lastCleaning: 'Hoy, 13:45',
+    cleaner: 'Lucía Fernández',
+    type: 'Limpieza',
+    incidents: 0,
+    alertRed: false,
+    photos: 9,
+    linens: 'Completo',
+  },
+  {
+    id: 8,
+    address: 'Calle Río 18, 2A',
+    owner: 'Elena Díaz',
+    status: 'ok',
+    lastCleaning: 'Ayer, 14:30',
+    cleaner: 'Carmen Díaz',
+    type: 'Refresh',
+    incidents: 0,
+    alertRed: false,
+    photos: 6,
+    linens: 'Completo',
+  },
+];
+
+const alertsRedData = [
+  {
+    id: 1,
+    address: 'Av. del Puerto 45, 1A',
+    reason: 'Propietario complicado',
+    notes: 'Revisa todo al detalle. Vive en el edificio.',
+  },
+  {
+    id: 2,
+    address: 'Calle Luna 5, 1B',
+    reason: 'Acceso complejo',
+    notes: 'Sin ascensor. 6 pisos a pie.',
+  },
+];
+
+const incidentsData = [
+  {
+    id: 1,
+    property: 'Calle Mayor 12, 3B',
+    title: 'Grifería gotea',
+    priority: 'alta',
+    status: 'en_curso',
+    date: 'Hoy, 09:45',
+    tech: 'Pedro Ramírez',
+  },
+  {
+    id: 2,
+    property: 'Av. del Puerto 45, 1A',
+    title: 'Bombilla fundida en cocina',
+    priority: 'media',
+    status: 'pendiente',
+    date: 'Hoy, 10:30',
+    tech: 'Sin asignar',
+  },
+  {
+    id: 3,
+    property: 'Plaza España 8, 5C',
+    title: 'Puerta del balcón no cierra',
+    priority: 'alta',
+    status: 'en_curso',
+    date: 'Hoy, 08:15',
+    tech: 'Pedro Ramírez',
+  },
+  {
+    id: 4,
+    property: 'Calle Sol 22, 2D',
+    title: 'Pintura descascarillada',
+    priority: 'baja',
+    status: 'pendiente',
+    date: 'Ayer, 17:20',
+    tech: 'Sin asignar',
+  },
+];
+
+const recentReportsData = [
+  { id: 1, title: 'Reporte mensual - Agosto 2026', date: '01 sep 2026', type: 'PDF', size: '2.4 MB' },
+  { id: 2, title: 'Reporte por propietario - Juan Pérez', date: '28 ago 2026', type: 'PDF', size: '1.8 MB' },
+  { id: 3, title: 'Reporte de incidencias - Julio 2026', date: '01 ago 2026', type: 'PDF', size: '3.1 MB' },
+];
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+function showTab(tab, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + tab).classList.add('active');
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.currentTab = tab;
+
+  if (tab === 'dashboard') renderDashboard();
+  if (tab === 'propiedades') renderProperties();
+  if (tab === 'incidencias') renderIncidents();
+  if (tab === 'reportes') renderReports();
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard() {
+  // Propiedades que requieren atención
+  const attention = state.properties.filter(p => p.status !== 'ok').slice(0, 3);
+  const grid = document.getElementById('attentionGrid');
+  grid.innerHTML = '';
+  attention.forEach(p => grid.appendChild(createPropertyCard(p)));
+
+  // Alertas rojas
+  const alertList = document.getElementById('alertRedList');
+  alertList.innerHTML = '';
+  state.alertsRed.forEach(alert => {
+    const div = document.createElement('div');
+    div.className = 'incident-item alta';
+    div.innerHTML = `
+      <div class="incident-icon">🔴</div>
+      <div class="incident-info">
+        <div class="incident-title">${alert.address}</div>
+        <div class="incident-desc">${alert.reason} — ${alert.notes}</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="removeAlert(${alert.id})">Quitar</button>
+    `;
+    alertList.appendChild(div);
+  });
+
+  // Últimas verificaciones
+  const recent = document.getElementById('recentVerifications');
+  recent.innerHTML = '';
+  const recentProps = state.properties.slice(0, 4);
+  recentProps.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'incident-item';
+    div.innerHTML = `
+      <div class="incident-icon">✅</div>
+      <div class="incident-info">
+        <div class="incident-title">${p.address}</div>
+        <div class="incident-desc">${p.lastCleaning} · ${p.cleaner} · ${p.photos} fotos</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="openProperty(${p.id})">Ver</button>
+    `;
+    recent.appendChild(div);
+  });
+
+  // Fecha
+  const now = new Date();
+  const options = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+  document.getElementById('headerDate').textContent =
+    now.toLocaleDateString('es-ES', options).replace(/^\w/, c => c.toUpperCase());
+}
+
+/* ============================================================
+   PROPIEDADES
+   ============================================================ */
+function renderProperties() {
+  const grid = document.getElementById('propertiesGrid');
+  grid.innerHTML = '';
+
+  let filtered = state.properties;
+  if (state.filter !== 'all') {
+    filtered = filtered.filter(p => p.status === state.filter);
+  }
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<p style="text-align: center; opacity: 0.5; padding: 40px; grid-column: 1/-1;">No hay propiedades en este filtro</p>';
+    return;
+  }
+
+  filtered.forEach(p => grid.appendChild(createPropertyCard(p)));
+}
+
+function createPropertyCard(p) {
+  const card = document.createElement('div');
+  card.className = 'property-card';
+  if (p.status === 'alert') card.classList.add('alert');
+  if (p.status === 'warn') card.classList.add('warning');
+  card.onclick = () => openProperty(p.id);
+
+  const statusLabel = {
+    ok: 'OK',
+    warn: 'Atención',
+    alert: 'Alerta roja',
+  }[p.status];
+
+  const statusClass = {
+    ok: 'status-badge-ok',
+    warn: 'status-badge-warn',
+    alert: 'status-badge-alert',
+  }[p.status];
+
+  card.innerHTML = `
+    <div class="property-image">
+      🏠
+      <span class="status-badge ${statusClass}">${statusLabel}</span>
+    </div>
+    <div class="property-body">
+      <div class="property-address">${p.address}</div>
+      <div class="property-owner">Propietario: ${p.owner}</div>
+      <div class="property-meta">
+        <span>🕐 ${p.lastCleaning}</span>
+        <span>📸 ${p.photos} fotos</span>
+        ${p.incidents > 0 ? `<span style="color: var(--danger); font-weight: 600;">⚠️ ${p.incidents} incidencia${p.incidents > 1 ? 's' : ''}</span>` : ''}
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
+function filterProperties(filter, btn) {
+  state.filter = filter;
+  document.querySelectorAll('#screen-propiedades .filter-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderProperties();
+}
+
+/* ============================================================
+   DETALLE DE PROPIEDAD
+   ============================================================ */
+function openProperty(id) {
+  const p = state.properties.find(prop => prop.id === id);
+  if (!p) return;
+
+  const content = document.getElementById('propertyModalContent');
+  content.innerHTML = `
+    <div class="property-header">
+      <div>
+        <h2>${p.address}</h2>
+        <p>Propietario: ${p.owner}</p>
+      </div>
+      <div class="actions">
+        <button class="btn btn-outline btn-sm" onclick="closePropertyModal()" style="background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); color: white;">
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>📸 Fotos de la última limpieza</h3>
+            <span style="font-size: 12px; color: var(--dark); opacity: 0.7;">${p.photos} fotos</span>
+          </div>
+          <div class="panel-body">
+            <div class="photo-grid">
+              ${Array.from({length: Math.min(8, p.photos)}, (_, i) => `
+                <div class="photo-thumb" style="position: relative;">
+                  📷
+                  <span class="photo-label">${i === 0 ? 'Baño' : i === 1 ? 'Cocina' : i === 2 ? 'Cama 1' : i === 3 ? 'Cama 2' : i === 4 ? 'Salón' : i === 5 ? 'Balcón' : i === 6 ? 'Llave' : 'General'}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>⚠️ Incidencias abiertas</h3>
+          </div>
+          <div class="panel-body">
+            ${state.incidents.filter(i => i.property === p.address).length === 0
+              ? '<p style="text-align: center; opacity: 0.5; padding: 12px;">Sin incidencias abiertas ✓</p>'
+              : state.incidents.filter(i => i.property === p.address).map(i => `
+                  <div class="incident-item ${i.priority}">
+                    <div class="incident-icon">🔧</div>
+                    <div class="incident-info">
+                      <div class="incident-title">${i.title}</div>
+                      <div class="incident-desc">${i.date} · ${i.tech}</div>
+                    </div>
+                    <span class="incident-status">${i.status === 'en_curso' ? 'En curso' : 'Pendiente'}</span>
+                  </div>
+                `).join('')
+            }
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>📋 Información</h3>
+          </div>
+          <div class="panel-body">
+            <div class="detail-row">
+              <span class="label">Estado</span>
+              <span class="value">${p.status === 'ok' ? '✅ OK' : p.status === 'warn' ? '⚠️ Atención' : '🔴 Alerta'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Última limpieza</span>
+              <span class="value">${p.lastCleaning}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Cleaner</span>
+              <span class="value">${p.cleaner}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Tipo</span>
+              <span class="value">${p.type}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Linens</span>
+              <span class="value">${p.linens}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>⚙️ Acciones</h3>
+          </div>
+          <div class="panel-body">
+            <button class="btn btn-primary btn-block mb-1" onclick="showToast('Reporte generado'); closePropertyModal();">
+              📄 Generar reporte
+            </button>
+            <button class="btn btn-outline btn-block mb-1" onclick="showToast('Incidencia creada'); closePropertyModal();">
+              ⚠️ Reportar incidencia
+            </button>
+            <button class="btn btn-outline btn-block mb-1" onclick="showToast('Deep cleaning programada'); closePropertyModal();">
+              🧹 Solicitar deep cleaning
+            </button>
+            <button class="btn btn-danger btn-block" onclick="markAlertRed('${p.address}'); closePropertyModal();">
+              🔴 Marcar alerta roja
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('propertyModal').classList.add('visible');
+}
+
+function closePropertyModal() {
+  document.getElementById('propertyModal').classList.remove('visible');
+}
+
+/* ============================================================
+   INCIDENCIAS
+   ============================================================ */
+function renderIncidents() {
+  const list = document.getElementById('incidentsList');
+  list.innerHTML = '';
+
+  if (state.incidents.length === 0) {
+    list.innerHTML = '<p style="text-align: center; opacity: 0.5; padding: 40px;">No hay incidencias abiertas ✓</p>';
+    return;
+  }
+
+  state.incidents.forEach(inc => {
+    const div = document.createElement('div');
+    div.className = 'incident-item ' + inc.priority;
+    div.innerHTML = `
+      <div class="incident-icon">🔧</div>
+      <div class="incident-info">
+        <div class="incident-title">${inc.title}</div>
+        <div class="incident-desc">${inc.property} · ${inc.date} · ${inc.tech}</div>
+      </div>
+      <span class="incident-status">${inc.status === 'en_curso' ? 'En curso' : 'Pendiente'}</span>
+    `;
+    list.appendChild(div);
+  });
+}
+
+/* ============================================================
+   REPORTES
+   ============================================================ */
+function renderReports() {
+  const list = document.getElementById('recentReports');
+  list.innerHTML = '';
+
+  state.reports.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'incident-item';
+    div.innerHTML = `
+      <div class="incident-icon">📄</div>
+      <div class="incident-info">
+        <div class="incident-title">${r.title}</div>
+        <div class="incident-desc">${r.date} · ${r.size}</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="showToast('Descargando ${r.title}')">
+        📥 Descargar
+      </button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function generateReport() {
+  const type = document.getElementById('reportType').value;
+  const property = document.getElementById('reportProperty').value;
+  const period = document.getElementById('reportPeriod').value;
+
+  showToast(`Generando ${type}...`, 'success');
+
+  setTimeout(() => {
+    state.reports.unshift({
+      id: Date.now(),
+      title: `${type} - ${property}`,
+      date: 'Ahora',
+      type: 'PDF',
+      size: '2.1 MB',
+    });
+    renderReports();
+    showToast('Reporte generado correctamente', 'success');
+  }, 1500);
+}
+
+/* ============================================================
+   ALERTA ROJA
+   ============================================================ */
+function openAlertModal() {
+  document.getElementById('alertModal').classList.add('visible');
+}
+
+function closeAlertModal() {
+  document.getElementById('alertModal').classList.remove('visible');
+}
+
+function saveAlertRed() {
+  const apt = document.getElementById('alertApt').value;
+  const reason = document.getElementById('alertReason').value;
+  const notes = document.getElementById('alertNotes').value;
+
+  if (!apt || !reason) {
+    showToast('Completa propiedad y motivo', 'error');
+    return;
+  }
+
+  state.alertsRed.push({
+    id: Date.now(),
+    address: apt,
+    reason,
+    notes: notes || 'Sin instrucciones especiales',
+  });
+
+  // Actualizar propiedad si existe
+  const property = state.properties.find(p => p.address === apt);
+  if (property) {
+    property.alertRed = true;
+    property.status = 'alert';
+    property.alertReason = reason;
+  }
+
+  closeAlertModal();
+  renderDashboard();
+  showToast('Alerta roja guardada', 'success');
+
+  document.getElementById('alertApt').value = '';
+  document.getElementById('alertReason').value = '';
+  document.getElementById('alertNotes').value = '';
+}
+
+function markAlertRed(address) {
+  const property = state.properties.find(p => p.address === address);
+  if (!property) return;
+
+  state.alertsRed.push({
+    id: Date.now(),
+    address,
+    reason: 'Marcado desde detalle',
+    notes: 'Sin instrucciones especiales',
+  });
+
+  property.alertRed = true;
+  property.status = 'alert';
+
+  renderDashboard();
+  renderProperties();
+  showToast('Alerta roja marcada', 'success');
+}
+
+function removeAlert(id) {
+  if (!confirm('¿Quitar esta alerta roja?')) return;
+  const alert = state.alertsRed.find(a => a.id === id);
+  state.alertsRed = state.alertsRed.filter(a => a.id !== id);
+
+  if (alert) {
+    const property = state.properties.find(p => p.address === alert.address);
+    if (property) {
+      property.alertRed = false;
+      property.status = 'ok';
+    }
+  }
+
+  renderDashboard();
+  renderProperties();
+  showToast('Alerta roja eliminada', 'warn');
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastTimeout = null;
+
+function showToast(message, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'toast visible ' + type;
+
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove('visible');
+  }, 2500);
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  state.properties = JSON.parse(JSON.stringify(propertiesData));
+  state.alertsRed = JSON.parse(JSON.stringify(alertsRedData));
+  state.incidents = JSON.parse(JSON.stringify(incidentsData));
+  state.reports = JSON.parse(JSON.stringify(recentReportsData));
+
+  renderDashboard();
+
+  // Cerrar modales al clic fuera
+  document.getElementById('alertModal').addEventListener('click', (e) => {
+    if (e.target.id === 'alertModal') closeAlertModal();
+  });
+  document.getElementById('propertyModal').addEventListener('click', (e) => {
+    if (e.target.id === 'propertyModal') closePropertyModal();
+  });
+});
+</script>
+
+</body>
+</html>

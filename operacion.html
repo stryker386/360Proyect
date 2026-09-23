@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>360 Ops — Operación</title>
+<style>
+/* ============================================================
+   RESET Y VARIABLES
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --primary: #1F3A5F;
+  --secondary: #2E86AB;
+  --accent: #F18F01;
+  --danger: #C73E1D;
+  --success: #3B8EA5;
+  --light: #F5F5F5;
+  --mid: #E0E0E0;
+  --dark: #4A4A4A;
+  --white: #FFFFFF;
+  --okgreen: #D4EDDA;
+  --nored: #F8D7DA;
+  --warnyellow: #FFF3CD;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: #E8EBEE;
+  color: var(--dark);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 0;
+}
+
+/* ============================================================
+   CONTENEDOR TIPO DESKTOP
+   ============================================================ */
+.app {
+  width: 100%;
+  max-width: 1400px;
+  min-height: calc(100vh - 40px);
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  background: var(--primary);
+  color: var(--white);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header .logo {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header .logo span {
+  color: var(--accent);
+}
+
+.header .role-badge {
+  background: rgba(255,255,255,0.15);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header .live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.15);
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #4ADE80;
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+.header .user-info {
+  text-align: right;
+  font-size: 13px;
+}
+
+.header .user-info .name {
+  font-weight: 600;
+}
+
+.header .user-info .date {
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+.header .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.header .help {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: var(--white);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.header .help:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ============================================================
+   NAVEGACIÓN TABS
+   ============================================================ */
+.tabs {
+  display: flex;
+  background: var(--white);
+  border-bottom: 1px solid var(--mid);
+  padding: 0 24px;
+  overflow-x: auto;
+  position: sticky;
+  top: 72px;
+  z-index: 90;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  padding: 16px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark);
+  opacity: 0.6;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: var(--font);
+}
+
+.tabs button:hover {
+  opacity: 1;
+}
+
+.tabs button.active {
+  opacity: 1;
+  color: var(--primary);
+  border-bottom-color: var(--accent);
+}
+
+/* ============================================================
+   CONTENIDO
+   ============================================================ */
+.content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.screen {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   KPIs GLOBALES
+   ============================================================ */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--secondary);
+}
+
+.kpi-card.alert::before { background: var(--danger); }
+.kpi-card.warn::before { background: var(--accent); }
+.kpi-card.success::before { background: var(--success); }
+
+.kpi-card .kpi-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--dark);
+  opacity: 0.6;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.kpi-card .kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.kpi-card .kpi-change {
+  font-size: 12px;
+  margin-top: 8px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+/* ============================================================
+   SECCIONES
+   ============================================================ */
+.section {
+  margin-bottom: 32px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.section-header h2 {
+  font-size: 20px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.section-header .actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background: #d97d00;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--white);
+}
+
+.btn-secondary:hover {
+  background: #26719a;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--mid);
+  color: var(--dark);
+}
+
+.btn-outline:hover {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.btn-danger:hover {
+  background: #a83216;
+}
+
+.btn-success {
+  background: var(--success);
+  color: var(--white);
+}
+
+.btn-success:hover {
+  background: #2c6c7d;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn-block {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ============================================================
+   DASHBOARD POR DEPARTAMENTOS
+   ============================================================ */
+.departments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.dept-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.dept-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.dept-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--secondary);
+}
+
+.dept-card.limpieza::before { background: #2E86AB; }
+.dept-card.linens::before { background: #F18F01; }
+.dept-card.drivers::before { background: #3B8EA5; }
+.dept-card.mant::before { background: #C73E1D; }
+.dept-card.pm::before { background: #6A1B9A; }
+.dept-card.bodega::before { background: #00897B; }
+
+.dept-card .dept-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.dept-card .dept-icon {
+  font-size: 24px;
+}
+
+.dept-card .dept-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dept-card .dept-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.dept-card .dept-num {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.dept-card .dept-label {
+  font-size: 11px;
+  color: var(--dark);
+  opacity: 0.7;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.dept-card .dept-status {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--light);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-ok { color: var(--success); font-weight: 600; }
+.status-warn { color: var(--accent); font-weight: 600; }
+.status-alert { color: var(--danger); font-weight: 600; }
+
+/* ============================================================
+   CONFLICTOS
+   ============================================================ */
+.conflict-item {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+}
+
+.conflict-item.critical {
+  border-left-color: var(--danger);
+  background: linear-gradient(to right, var(--nored) 0%, var(--white) 10%);
+}
+
+.conflict-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.conflict-title {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 15px;
+  flex: 1;
+}
+
+.conflict-badge {
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.badge-critical {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.badge-medium {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.conflict-desc {
+  font-size: 13px;
+  color: var(--dark);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.conflict-parties {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.party-chip {
+  background: var(--light);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.conflict-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   ALERTAS ROJAS
+   ============================================================ */
+.alert-red-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.alert-red-card {
+  background: linear-gradient(135deg, var(--nored) 0%, var(--white) 100%);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.alert-red-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.alert-red-header .icon {
+  font-size: 24px;
+}
+
+.alert-red-header h4 {
+  color: var(--danger);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.alert-red-address {
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.alert-red-reason {
+  font-size: 13px;
+  color: var(--dark);
+  margin-bottom: 12px;
+  padding: 8px;
+  background: rgba(255,255,255,0.6);
+  border-radius: var(--radius-sm);
+}
+
+.alert-red-reason strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--danger);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.alert-red-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.alert-red-footer .alert-date {
+  font-size: 12px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.alert-red-footer .alert-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* ============================================================
+   REPORTES
+   ============================================================ */
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.report-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.report-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--secondary);
+}
+
+.report-card .report-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.report-card .report-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.report-card .report-desc {
+  font-size: 13px;
+  color: var(--dark);
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+/* ============================================================
+   AUDITORÍA DE ACCESOS
+   ============================================================ */
+.access-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.access-table thead {
+  background: var(--light);
+}
+
+.access-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--mid);
+}
+
+.access-table td {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--dark);
+  border-bottom: 1px solid var(--light);
+}
+
+.access-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.access-table tbody tr:hover {
+  background: var(--light);
+}
+
+.access-status {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.access-ok {
+  background: var(--okgreen);
+  color: #2E7D32;
+}
+
+.access-warn {
+  background: var(--warnyellow);
+  color: #856404;
+}
+
+.access-alert {
+  background: var(--nored);
+  color: var(--danger);
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--primary);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 2000;
+  box-shadow: var(--shadow-lg);
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+.toast.warn { background: var(--accent); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 700px) {
+  .header {
+    padding: 12px 16px;
+  }
+  .header .user-info {
+    display: none;
+  }
+  .header .live-indicator span {
+    display: none;
+  }
+  .content {
+    padding: 16px;
+  }
+  .kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kpi-card .kpi-value {
+    font-size: 24px;
+  }
+  .tabs {
+    padding: 0 16px;
+  }
+  .tabs button {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+  .access-table {
+    font-size: 12px;
+  }
+  .access-table th,
+  .access-table td {
+    padding: 8px;
+  }
+}
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+.hidden { display: none !important; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.text-center { text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">360<span>Ops</span></div>
+      <span class="role-badge">Operación</span>
+    </div>
+    <div class="header-right">
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        <span>En vivo</span>
+      </div>
+      <div class="user-info">
+        <div class="name">Andrea Vega</div>
+        <div class="date" id="headerDate">Lunes 22 sep 2026 · 14:32</div>
+      </div>
+      <div class="avatar">AV</div>
+      <button class="help" onclick="showToast('Ayuda: soporte@360estates.com')">?</button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       TABS
+       ============================================================ -->
+  <nav class="tabs" id="tabs">
+    <button class="active" onclick="showTab('dashboard', this)">📊 Dashboard global</button>
+    <button onclick="showTab('conflictos', this)">⚡ Conflictos</button>
+    <button onclick="showTab('alertas', this)">🔴 Alertas rojas</button>
+    <button onclick="showTab('reportes', this)">📄 Reportes</button>
+    <button onclick="showTab('accesos', this)">🔑 Auditoría</button>
+  </nav>
+
+  <!-- ============================================================
+       CONTENIDO
+       ============================================================ -->
+  <main class="content">
+
+    <!-- ============================================================
+         TAB 1: DASHBOARD GLOBAL
+         ============================================================ -->
+    <section class="screen active" id="screen-dashboard">
+      <div class="kpis">
+        <div class="kpi-card">
+          <div class="kpi-label">Tareas activas</div>
+          <div class="kpi-value" id="kpiTasksActive">45</div>
+          <div class="kpi-change">En todos los departamentos</div>
+        </div>
+        <div class="kpi-card success">
+          <div class="kpi-label">Completadas hoy</div>
+          <div class="kpi-value" id="kpiTasksDone">120</div>
+          <div class="kpi-change">73% del total</div>
+        </div>
+        <div class="kpi-card warn">
+          <div class="kpi-label">Incidencias abiertas</div>
+          <div class="kpi-value" id="kpiIncidents">8</div>
+          <div class="kpi-change">2 críticas</div>
+        </div>
+        <div class="kpi-card alert">
+          <div class="kpi-label">Conflictos activos</div>
+          <div class="kpi-value" id="kpiConflicts">3</div>
+          <div class="kpi-change">1 requiere decisión</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>🏢 Estado por departamento</h2>
+          <div class="actions">
+            <button class="btn btn-outline btn-sm" onclick="refreshDashboard()">
+              🔄 Actualizar
+            </button>
+          </div>
+        </div>
+
+        <div class="departments-grid">
+          <div class="dept-card limpieza" onclick="showToast('Ver limpieza')">
+            <div class="dept-header">
+              <span class="dept-icon">🧹</span>
+              <span class="dept-name">Limpieza</span>
+            </div>
+            <div class="dept-stats">
+              <div class="dept-num">18</div>
+              <div class="dept-label">tareas hoy</div>
+            </div>
+            <div class="dept-status">
+              <span class="status-ok">● 11 hechas</span>
+              <span style="opacity: 0.5;">·</span>
+              <span class="status-warn">5 en curso</span>
+            </div>
+          </div>
+
+          <div class="dept-card linens" onclick="showToast('Ver linens')">
+            <div class="dept-header">
+              <span class="dept-icon">🧺</span>
+              <span class="dept-name">Linens</span>
+            </div>
+            <div class="dept-stats">
+              <div class="dept-num">5</div>
+              <div class="dept-label">preparaciones</div>
+            </div>
+            <div class="dept-status">
+              <span class="status-ok">● 2 hechas</span>
+              <span style="opacity: 0.5;">·</span>
+              <span class="status-warn">3 pendientes</span>
+            </div>
+          </div>
+
+          <div class="dept-card drivers" onclick="showToast('Ver drivers')">
+            <div class="dept-header">
+              <span class="dept-icon">🚐</span>
+              <span class="dept-name">Drivers</span>
+            </div>
+            <div class="dept-stats">
+              <div class="dept-num">12</div>
+              <div class="dept-label">paradas hoy</div>
+            </div>
+            <div class="dept-status">
+              <span class="status-ok">● 8 completadas</span>
+              <span style="opacity: 0.5;">·</span>
+              <span class="status-warn">4 en ruta</span>
+            </div>
+          </div>
+
+          <div class="dept-card mant" onclick="showToast('Ver mantenimiento')">
+            <div class="dept-header">
+              <span class="dept-icon">🔧</span>
+              <span class="dept-name">Mantenimiento</span>
+            </div>
+            <div class="dept-stats">
+              <div class="dept-num">8</div>
+              <div class="dept-label">incidencias</div>
+            </div>
+            <div class="dept-status">
+              <span class="status-ok">● 3 resueltas</span>
+              <span style="opacity: 0.5;">·</span>
+              <span class="status-alert">2 críticas</span>
+            </div>
+          </div>
+
+          <div class="dept-card pm" onclick="showToast('Ver PM')">
+            <div class="dept-header">
+              <span class="dept-icon">🏠</span>
+              <span class="dept-name">Property Managers</span>
+            </div>
+            <div class="dept-stats">
+              <div class="dept-num">24</div>
+              <div class="dept-label">propiedades</div>
+            </div>
+            <div class="dept-status">
+              <span class="status-ok">● 18 OK</span>
+              <span style="opacity: 0.5;">·</span>
+              <span class="status-alert">2 alertas rojas</span>
+            </div>
+          </div>
+
+          <div class="dept-card bodega" onclick="showToast('Ver bodega')">
+            <div class="dept-header">
+              <span class="dept-icon">📦</span>
+              <span class="dept-name">Bodega</span>
+            </div>
+            <div class="dept-stats">
+              <div class="dept-num">3</div>
+              <div class="dept-label">solicitudes</div>
+            </div>
+            <div class="dept-status">
+              <span class="status-ok">● 1 aprobada</span>
+              <span style="opacity: 0.5;">·</span>
+              <span class="status-warn">2 pendientes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>⚡ Actividad reciente</h2>
+        </div>
+        <div id="recentActivity"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2>📈 KPIs de la operación</h2>
+        </div>
+        <div class="kpis" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+          <div class="kpi-card">
+            <div class="kpi-label">Tiempo medio de limpieza</div>
+            <div class="kpi-value" style="font-size: 24px;">78 min</div>
+            <div class="kpi-change">vs 82 min ayer</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Alertas a drivers a tiempo</div>
+            <div class="kpi-value" style="font-size: 24px;">96%</div>
+            <div class="kpi-change">Objetivo: >95%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Cadena de linens cerrada</div>
+            <div class="kpi-value" style="font-size: 24px;">94%</div>
+            <div class="kpi-change">Objetivo: >95%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Tareas con foto</div>
+            <div class="kpi-value" style="font-size: 24px;">100%</div>
+            <div class="kpi-change">Trazabilidad completa</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TAB 2: CONFLICTOS
+         ============================================================ -->
+    <section class="screen" id="screen-conflictos">
+      <div class="section-header">
+        <h2>⚡ Conflictos entre departamentos</h2>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm" onclick="refreshConflicts()">
+            🔄 Actualizar
+          </button>
+        </div>
+      </div>
+
+      <div id="conflictsList"></div>
+    </section>
+
+    <!-- ============================================================
+         TAB 3: ALERTAS ROJAS
+         ============================================================ -->
+    <section class="screen" id="screen-alertas">
+      <div class="section-header">
+        <h2>🔴 Alertas rojas activas</h2>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm" onclick="showToast('Filtrando...')">
+            🔍 Filtrar
+          </button>
+        </div>
+      </div>
+
+      <div class="alert-red-grid" id="alertRedList"></div>
+    </section>
+
+    <!-- ============================================================
+         TAB 4: REPORTES
+         ============================================================ -->
+    <section class="screen" id="screen-reportes">
+      <div class="section-header">
+        <h2>📄 Reportes globales</h2>
+        <div class="actions">
+          <button class="btn btn-primary btn-sm" onclick="showToast('Generando reporte...')">
+            📄 Generar nuevo
+          </button>
+        </div>
+      </div>
+
+      <div class="reports-grid">
+        <div class="report-card" onclick="showToast('Generando reporte diario...')">
+          <div class="report-icon">📊</div>
+          <div class="report-title">Reporte diario</div>
+          <div class="report-desc">Resumen de la operación del día: tareas, tiempos, incidencias.</div>
+          <button class="btn btn-secondary btn-sm btn-block">Generar PDF</button>
+        </div>
+
+        <div class="report-card" onclick="showToast('Generando reporte semanal...')">
+          <div class="report-icon">📈</div>
+          <div class="report-title">Reporte semanal</div>
+          <div class="report-desc">KPIs de la semana, tendencias, comparativa con semana anterior.</div>
+          <button class="btn btn-secondary btn-sm btn-block">Generar PDF</button>
+        </div>
+
+        <div class="report-card" onclick="showToast('Generando reporte mensual...')">
+          <div class="report-icon">📅</div>
+          <div class="report-title">Reporte mensual</div>
+          <div class="report-desc">Resumen ejecutivo del mes con gráficos y métricas clave.</div>
+          <button class="btn btn-secondary btn-sm btn-block">Generar PDF</button>
+        </div>
+
+        <div class="report-card" onclick="showToast('Generando reporte por departamento...')">
+          <div class="report-icon">🏢</div>
+          <div class="report-title">Por departamento</div>
+          <div class="report-desc">Rendimiento de cada departamento: tiempos, incidencias, productividad.</div>
+          <button class="btn btn-secondary btn-sm btn-block">Generar PDF</button>
+        </div>
+
+        <div class="report-card" onclick="showToast('Generando reporte por propiedad...')">
+          <div class="report-icon">🏠</div>
+          <div class="report-title">Por propiedad</div>
+          <div class="report-desc">Historial completo de una propiedad: limpiezas, incidencias, gastos.</div>
+          <button class="btn btn-secondary btn-sm btn-block">Generar PDF</button>
+        </div>
+
+        <div class="report-card" onclick="showToast('Generando reporte de accesos...')">
+          <div class="report-icon">🔑</div>
+          <div class="report-title">Auditoría de accesos</div>
+          <div class="report-desc">Historial de accesos a propiedades: quién, cuándo, cómo.</div>
+          <button class="btn btn-secondary btn-sm btn-block">Generar PDF</button>
+        </div>
+      </div>
+
+      <div class="section mt-2">
+        <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+          Reportes recientes
+        </h3>
+        <div id="recentReports"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TAB 5: AUDITORÍA DE ACCESOS
+         ============================================================ -->
+    <section class="screen" id="screen-accesos">
+      <div class="section-header">
+        <h2>🔑 Auditoría de accesos</h2>
+        <div class="actions">
+          <button class="btn btn-outline btn-sm" onclick="showToast('Exportando CSV...')">
+            📥 Exportar CSV
+          </button>
+        </div>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="access-table">
+          <thead>
+            <tr>
+              <th>Fecha y hora</th>
+              <th>Propiedad</th>
+              <th>Usuario</th>
+              <th>Rol</th>
+              <th>Tipo de acceso</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="accessTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- ============================================================
+     TOAST
+     ============================================================ -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ESTADO
+   ============================================================ */
+const state = {
+  currentTab: 'dashboard',
+  conflicts: [],
+  alertsRed: [],
+  reports: [],
+  accesses: [],
+  activities: [],
+};
+
+/* ============================================================
+   DATOS DEMO
+   ============================================================ */
+const conflictsData = [
+  {
+    id: 1,
+    title: 'Limpieza terminó pero linens no llegó',
+    desc: 'El cleaner ha cerrado la tarea, pero linens no ha preparado las toallas. El driver espera en la puerta.',
+    parties: ['Limpieza', 'Linens', 'Drivers'],
+    critical: true,
+    date: 'Hace 8 min',
+  },
+  {
+    id: 2,
+    title: 'Driver no puede acceder al apartamento',
+    desc: 'El código del keybox no funciona. El driver ha reportado el problema pero necesita autorización para forzar la apertura.',
+    parties: ['Drivers', 'Operación'],
+    critical: true,
+    date: 'Hace 15 min',
+  },
+  {
+    id: 3,
+    title: 'Mantenimiento y limpieza se cruzan',
+    desc: 'Mantenimiento necesita entrar a reparar la grifería, pero limpieza tiene la tarea programada para dentro de 30 min.',
+    parties: ['Mantenimiento', 'Limpieza'],
+    critical: false,
+    date: 'Hace 22 min',
+  },
+  {
+    id: 4,
+    title: 'Propietario pide deep cleaning urgente',
+    desc: 'Property Manager ha recibido una solicitud del propietario para deep cleaning mañana. Hay que verificar disponibilidad.',
+    parties: ['Property Manager', 'Limpieza'],
+    critical: false,
+    date: 'Hace 45 min',
+  },
+];
+
+const alertsRedData = [
+  {
+    id: 1,
+    address: 'Av. del Puerto 45, 1A',
+    reason: 'Propietario complicado',
+    notes: 'Revisa todo al detalle. Vive en el edificio.',
+    date: 'Hace 3 días',
+    createdBy: 'Carlos Ruiz (Líder Limpieza)',
+  },
+  {
+    id: 2,
+    address: 'Calle Luna 5, 1B',
+    reason: 'Acceso complejo',
+    notes: 'Sin ascensor. 6 pisos a pie.',
+    date: 'Hace 5 días',
+    createdBy: 'Laura Sánchez (PM)',
+  },
+  {
+    id: 3,
+    address: 'Gran Vía 100, 4A',
+    reason: 'Huésped complicado',
+    notes: 'Historial de fiestas y daños. Revisar al detalle.',
+    date: 'Hace 1 semana',
+    createdBy: 'Carlos Ruiz (Líder Limpieza)',
+  },
+];
+
+const recentReportsData = [
+  { id: 1, title: 'Reporte diario - 21 sep 2026', date: 'Ayer', type: 'PDF', size: '1.2 MB' },
+  { id: 2, title: 'Reporte semanal - Semana 38', date: 'Hace 3 días', type: 'PDF', size: '2.8 MB' },
+  { id: 3, title: 'Auditoría de accesos - Septiembre 2026', date: 'Hace 5 días', type: 'PDF', size: '4.1 MB' },
+];
+
+const accessesData = [
+  { date: 'Hoy, 14:32', property: 'Calle Mayor 12, 3B', user: 'María López', role: 'Cleaner', type: 'QR + código', status: 'ok' },
+  { date: 'Hoy, 14:15', property: 'Av. del Puerto 45, 1A', user: 'Javier Ramírez', role: 'Driver', type: 'Llave física', status: 'ok' },
+  { date: 'Hoy, 13:58', property: 'Plaza España 8, 5C', user: 'Pedro Ramírez', role: 'Mantenimiento', type: 'Código', status: 'ok' },
+  { date: 'Hoy, 13:45', property: 'Calle Sol 22, 2D', user: 'Ana García', role: 'Cleaner', type: 'QR', status: 'ok' },
+  { date: 'Hoy, 13:20', property: 'Gran Vía 100, 4A', user: 'Carmen Díaz', role: 'Cleaner', type: 'QR', status: 'ok' },
+  { date: 'Hoy, 12:50', property: 'Calle Luna 5, 1B', user: 'Lucía Fernández', role: 'Cleaner', type: 'Código', status: 'warn', note: 'Acceso fuera de ventana' },
+  { date: 'Hoy, 12:30', property: 'Av. Mar 33, 6C', user: 'Sofía Martín', role: 'Linens', type: 'Llave física', status: 'ok' },
+  { date: 'Hoy, 11:15', property: 'Calle Río 18, 2A', user: 'María López', role: 'Cleaner', type: 'QR', status: 'ok' },
+  { date: 'Hoy, 10:45', property: 'Calle Mayor 12, 3B', user: 'Usuario desconocido', role: '—', type: 'Código', status: 'alert', note: 'Intento fallido' },
+  { date: 'Hoy, 09:30', property: 'Plaza España 8, 5C', user: 'Carlos Ruiz', role: 'Líder Limpieza', type: 'Código', status: 'ok' },
+];
+
+const activitiesData = [
+  { id: 1, icon: '🧹', title: 'María López completó limpieza', desc: 'Calle Mayor 12, 3B · 78 min', time: 'Hace 5 min', type: 'ok' },
+  { id: 2, icon: '🧺', title: 'Sofía Martín preparó linens', desc: 'Calle Sol 22, 2D · 8 min', time: 'Hace 12 min', type: 'ok' },
+  { id: 3, icon: '🚐', title: 'Javier Ramírez entregó bulto', desc: 'Av. del Puerto 45, 1A', time: 'Hace 18 min', type: 'ok' },
+  { id: 4, icon: '⚠️', title: 'Incidencia reportada por Ana García', desc: 'Bombilla fundida en cocina', time: 'Hace 25 min', type: 'warn' },
+  { id: 5, icon: '🔧', title: 'Pedro Ramírez resolvió incidencia', desc: 'Grifería gotea · 42 min', time: 'Hace 35 min', type: 'ok' },
+  { id: 6, icon: '🔴', title: 'Carlos Ruiz marcó alerta roja', desc: 'Gran Vía 100, 4A · Huésped complicado', time: 'Hace 1 h', type: 'alert' },
+];
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+function showTab(tab, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + tab).classList.add('active');
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.currentTab = tab;
+
+  if (tab === 'dashboard') renderDashboard();
+  if (tab === 'conflictos') renderConflicts();
+  if (tab === 'alertas') renderAlertsRed();
+  if (tab === 'reportes') renderReports();
+  if (tab === 'accesos') renderAccesses();
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard() {
+  // Fecha y hora
+  const now = new Date();
+  const options = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+  const dateStr = now.toLocaleDateString('es-ES', options).replace(/^\w/, c => c.toUpperCase());
+  const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('headerDate').textContent = `${dateStr} · ${timeStr}`;
+
+  // Actividad reciente
+  const list = document.getElementById('recentActivity');
+  list.innerHTML = '';
+  state.activities.forEach(activity => {
+    const div = document.createElement('div');
+    div.className = 'conflict-item' + (activity.type === 'alert' ? ' critical' : '');
+    div.style.padding = '12px 16px';
+    div.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="font-size: 24px;">${activity.icon}</div>
+        <div style="flex: 1;">
+          <div style="font-weight: 600; color: var(--primary); font-size: 14px;">${activity.title}</div>
+          <div style="font-size: 12px; color: var(--dark); opacity: 0.7; margin-top: 2px;">${activity.desc}</div>
+        </div>
+        <div style="font-size: 12px; color: var(--dark); opacity: 0.6; white-space: nowrap;">${activity.time}</div>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function refreshDashboard() {
+  showToast('Dashboard actualizado', 'success');
+}
+
+/* ============================================================
+   CONFLICTOS
+   ============================================================ */
+function renderConflicts() {
+  const list = document.getElementById('conflictsList');
+  list.innerHTML = '';
+
+  if (state.conflicts.length === 0) {
+    list.innerHTML = '<p style="text-align: center; opacity: 0.5; padding: 40px;">No hay conflictos activos ✓</p>';
+    return;
+  }
+
+  state.conflicts.forEach(conflict => {
+    const div = document.createElement('div');
+    div.className = 'conflict-item' + (conflict.critical ? ' critical' : '');
+
+    div.innerHTML = `
+      <div class="conflict-header">
+        <div class="conflict-title">${conflict.title}</div>
+        <span class="conflict-badge ${conflict.critical ? 'badge-critical' : 'badge-medium'}">
+          ${conflict.critical ? '🔴 Crítico' : '⚠️ Medio'}
+        </span>
+      </div>
+      <div class="conflict-desc">${conflict.desc}</div>
+      <div class="conflict-parties">
+        <span style="font-size: 12px; opacity: 0.6;">Involucrados:</span>
+        ${conflict.parties.map(p => `<span class="party-chip">${p}</span>`).join('')}
+        <span style="font-size: 12px; opacity: 0.6; margin-left: auto;">${conflict.date}</span>
+      </div>
+      <div class="conflict-actions">
+        <button class="btn btn-primary btn-sm" onclick="resolveConflict(${conflict.id})">
+          ✅ Resolver
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="showToast('Viendo detalles del conflicto...')">
+          🔍 Ver detalles
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="showToast('Contactando a los implicados...')">
+          💬 Contactar
+        </button>
+      </div>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+function resolveConflict(id) {
+  const conflict = state.conflicts.find(c => c.id === id);
+  if (!conflict) return;
+
+  if (!confirm(`¿Marcar como resuelto el conflicto "${conflict.title}"?`)) return;
+
+  state.conflicts = state.conflicts.filter(c => c.id !== id);
+  renderConflicts();
+  document.getElementById('kpiConflicts').textContent = state.conflicts.length;
+  showToast('Conflicto resuelto', 'success');
+}
+
+function refreshConflicts() {
+  renderConflicts();
+  showToast('Conflictos actualizados', 'success');
+}
+
+/* ============================================================
+   ALERTAS ROJAS
+   ============================================================ */
+function renderAlertsRed() {
+  const list = document.getElementById('alertRedList');
+  list.innerHTML = '';
+
+  if (state.alertsRed.length === 0) {
+    list.innerHTML = '<p style="text-align: center; opacity: 0.5; padding: 40px; grid-column: 1/-1;">No hay alertas rojas activas ✓</p>';
+    return;
+  }
+
+  state.alertsRed.forEach(alert => {
+    const card = document.createElement('div');
+    card.className = 'alert-red-card';
+    card.innerHTML = `
+      <div class="alert-red-header">
+        <span class="icon">🔴</span>
+        <h4>ALERTA ROJA</h4>
+      </div>
+      <div class="alert-red-address">${alert.address}</div>
+      <div class="alert-red-reason">
+        <strong>Motivo</strong>
+        ${alert.reason}
+        <div style="margin-top: 8px;">
+          <strong>Instrucciones</strong>
+          ${alert.notes}
+        </div>
+      </div>
+      <div class="alert-red-footer">
+        <div>
+          <div class="alert-date">${alert.date}</div>
+          <div class="alert-date" style="font-size: 11px;">Por: ${alert.createdBy}</div>
+        </div>
+        <div class="alert-actions">
+          <button class="btn btn-outline btn-sm" onclick="showToast('Editando alerta...')">
+            ✏️ Editar
+          </button>
+          <button class="btn btn-success btn-sm" onclick="approveAlert(${alert.id})">
+            ✅ Aprobar
+          </button>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function approveAlert(id) {
+  const alert = state.alertsRed.find(a => a.id === id);
+  if (!alert) return;
+
+  if (!confirm(`¿Desmarcar la alerta roja de ${alert.address}?`)) return;
+
+  state.alertsRed = state.alertsRed.filter(a => a.id !== id);
+  renderAlertsRed();
+  showToast('Alerta roja desmarcada', 'success');
+}
+
+/* ============================================================
+   REPORTES
+   ============================================================ */
+function renderReports() {
+  const list = document.getElementById('recentReports');
+  list.innerHTML = '';
+
+  state.reports.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'conflict-item';
+    div.style.padding = '12px 16px';
+    div.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="font-size: 24px;">📄</div>
+        <div style="flex: 1;">
+          <div style="font-weight: 600; color: var(--primary); font-size: 14px;">${r.title}</div>
+          <div style="font-size: 12px; color: var(--dark); opacity: 0.7; margin-top: 2px;">${r.date} · ${r.size}</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="showToast('Descargando ${r.title}')">
+          📥 Descargar
+        </button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+/* ============================================================
+   AUDITORÍA DE ACCESOS
+   ============================================================ */
+function renderAccesses() {
+  const tbody = document.getElementById('accessTableBody');
+  tbody.innerHTML = '';
+
+  state.accesses.forEach(a => {
+    const tr = document.createElement('tr');
+
+    let statusLabel = '';
+    let statusClass = '';
+    if (a.status === 'ok') {
+      statusLabel = 'OK';
+      statusClass = 'access-ok';
+    } else if (a.status === 'warn') {
+      statusLabel = 'Fuera de ventana';
+      statusClass = 'access-warn';
+    } else {
+      statusLabel = 'Alerta';
+      statusClass = 'access-alert';
+    }
+
+    tr.innerHTML = `
+      <td style="white-space: nowrap;">${a.date}</td>
+      <td style="font-weight: 600; color: var(--primary);">${a.property}</td>
+      <td>${a.user}</td>
+      <td style="font-size: 12px; opacity: 0.7;">${a.role}</td>
+      <td>${a.type}</td>
+      <td>
+        <span class="access-status ${statusClass}">${statusLabel}</span>
+        ${a.note ? `<div style="font-size: 11px; opacity: 0.6; margin-top: 4px;">${a.note}</div>` : ''}
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastTimeout = null;
+
+function showToast(message, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'toast visible ' + type;
+
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove('visible');
+  }, 2500);
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  state.conflicts = JSON.parse(JSON.stringify(conflictsData));
+  state.alertsRed = JSON.parse(JSON.stringify(alertsRedData));
+  state.reports = JSON.parse(JSON.stringify(recentReportsData));
+  state.accesses = JSON.parse(JSON.stringify(accessesData));
+  state.activities = JSON.parse(JSON.stringify(activitiesData));
+
+  // KPIs dinámicos
+  document.getElementById('kpiConflicts').textContent = state.conflicts.length;
+
+  renderDashboard();
+});
+</script>
+
+</body>
+</html>

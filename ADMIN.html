@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>360 Ops — Administrador</title>
+<style>
+/* ============================================================
+   RESET Y VARIABLES
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --primary: #1F3A5F;
+  --secondary: #2E86AB;
+  --accent: #F18F01;
+  --danger: #C73E1D;
+  --success: #3B8EA5;
+  --light: #F5F5F5;
+  --mid: #E0E0E0;
+  --dark: #4A4A4A;
+  --white: #FFFFFF;
+  --okgreen: #D4EDDA;
+  --nored: #F8D7DA;
+  --warnyellow: #FFF3CD;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: #E8EBEE;
+  color: var(--dark);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 0;
+}
+
+/* ============================================================
+   CONTENEDOR TIPO DESKTOP
+   ============================================================ */
+.app {
+  width: 100%;
+  max-width: 1400px;
+  min-height: calc(100vh - 40px);
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  background: var(--primary);
+  color: var(--white);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header .logo {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header .logo span {
+  color: var(--accent);
+}
+
+.header .role-badge {
+  background: var(--danger);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header .warning-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(241,143,1,0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: #FFD699;
+}
+
+.header .user-info {
+  text-align: right;
+  font-size: 13px;
+}
+
+.header .user-info .name {
+  font-weight: 600;
+}
+
+.header .user-info .date {
+  opacity: 0.7;
+  font-size: 12px;
+}
+
+.header .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.header .help {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: var(--white);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.header .help:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ============================================================
+   LAYOUT CON SIDEBAR
+   ============================================================ */
+.layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 240px;
+  background: var(--light);
+  border-right: 1px solid var(--mid);
+  padding: 16px 0;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+  font-family: var(--font);
+}
+
+.sidebar-item:hover {
+  background: rgba(46,134,171,0.08);
+  color: var(--primary);
+}
+
+.sidebar-item.active {
+  background: rgba(46,134,171,0.12);
+  color: var(--primary);
+  border-left-color: var(--accent);
+}
+
+.sidebar-item .sidebar-icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+}
+
+.sidebar-item .sidebar-badge {
+  margin-left: auto;
+  background: var(--danger);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--mid);
+  margin: 8px 16px;
+}
+
+.sidebar-section-title {
+  padding: 8px 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--dark);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   CONTENIDO PRINCIPAL
+   ============================================================ */
+.main-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.screen {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   ENCABEZADO DE SECCIÓN
+   ============================================================ */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.section-header h2 {
+  font-size: 22px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.section-header p {
+  font-size: 14px;
+  color: var(--dark);
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+.section-header .actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background: #d97d00;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--white);
+}
+
+.btn-secondary:hover {
+  background: #26719a;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--mid);
+  color: var(--dark);
+}
+
+.btn-outline:hover {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.btn-danger:hover {
+  background: #a83216;
+}
+
+.btn-success {
+  background: var(--success);
+  color: var(--white);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn-icon {
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+/* ============================================================
+   KPIs
+   ============================================================ */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--secondary);
+}
+
+.kpi-card.alert::before { background: var(--danger); }
+.kpi-card.warn::before { background: var(--accent); }
+.kpi-card.success::before { background: var(--success); }
+
+.kpi-card .kpi-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--dark);
+  opacity: 0.6;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.kpi-card .kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.kpi-card .kpi-change {
+  font-size: 12px;
+  margin-top: 8px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+/* ============================================================
+   TABLAS
+   ============================================================ */
+.table-container {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-container thead {
+  background: var(--light);
+}
+
+.table-container th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--mid);
+  white-space: nowrap;
+}
+
+.table-container td {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--dark);
+  border-bottom: 1px solid var(--light);
+}
+
+.table-container tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-container tbody tr:hover {
+  background: var(--light);
+}
+
+/* ============================================================
+   AVATARES Y BADGES
+   ============================================================ */
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--secondary);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.role-badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.role-cleaner { background: #E3F2FD; color: #1565C0; }
+.role-lider { background: #E8F5E9; color: #2E7D32; }
+.role-driver { background: #FFF3E0; color: #E65100; }
+.role-mant { background: #FCE4EC; color: #C2185B; }
+.role-linens { background: #F3E5F5; color: #6A1B9A; }
+.role-pm { background: #E0F7FA; color: #00838F; }
+.role-operacion { background: #FFF8E1; color: #F57F17; }
+.role-admin { background: var(--nored); color: var(--danger); }
+
+.status-badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.status-active {
+  background: var(--okgreen);
+  color: #2E7D32;
+}
+
+.status-inactive {
+  background: var(--mid);
+  color: var(--dark);
+}
+
+.status-suspended {
+  background: var(--nored);
+  color: var(--danger);
+}
+
+/* ============================================================
+   FILTROS
+   ============================================================ */
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  color: var(--dark);
+  font-family: var(--font);
+}
+
+.filter-chip:hover {
+  border-color: var(--secondary);
+}
+
+.filter-chip.active {
+  background: var(--primary);
+  color: var(--white);
+  border-color: var(--primary);
+}
+
+/* ============================================================
+   CARDS DE CONFIGURACIÓN
+   ============================================================ */
+.config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.config-card {
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+}
+
+.config-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.config-card .config-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.config-card .config-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.config-card .config-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.config-card .config-desc {
+  font-size: 13px;
+  color: var(--dark);
+  opacity: 0.7;
+  margin-bottom: 16px;
+}
+
+.config-card .config-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.ok { background: #4ADE80; }
+.status-dot.warn { background: var(--accent); }
+.status-dot.error { background: var(--danger); }
+
+/* ============================================================
+   LOGS
+   ============================================================ */
+.log-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  border-left: 3px solid var(--secondary);
+}
+
+.log-item.warn { border-left-color: var(--accent); }
+.log-item.error { border-left-color: var(--danger); }
+.log-item.success { border-left-color: var(--success); }
+
+.log-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.log-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.log-title {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.log-desc {
+  font-size: 12px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.log-meta {
+  font-size: 11px;
+  color: var(--dark);
+  opacity: 0.5;
+  margin-top: 4px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   INTEGRACIONES
+   ============================================================ */
+.integration-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--white);
+  border: 1px solid var(--mid);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+}
+
+.integration-item:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.integration-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.integration-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.integration-name {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.integration-desc {
+  font-size: 13px;
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.integration-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.integration-status.connected {
+  background: var(--okgreen);
+  color: #2E7D32;
+}
+
+.integration-status.disconnected {
+  background: var(--mid);
+  color: var(--dark);
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-overlay.visible {
+  display: flex;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalIn 0.3s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal h3 {
+  font-size: 20px;
+  color: var(--primary);
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.modal .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .modal .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--mid);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font);
+  background: var(--white);
+  color: var(--dark);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: 2px solid var(--secondary);
+  border-color: transparent;
+}
+
+.form-group .help-text {
+  font-size: 12px;
+  color: var(--dark);
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--primary);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 2000;
+  box-shadow: var(--shadow-lg);
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+.toast.warn { background: var(--accent); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 60px;
+  }
+  .sidebar-item {
+    padding: 12px;
+    justify-content: center;
+  }
+  .sidebar-item span:not(.sidebar-icon) {
+    display: none;
+  }
+  .sidebar-section-title {
+    display: none;
+  }
+  .sidebar-item .sidebar-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .header {
+    padding: 12px 16px;
+  }
+  .header .user-info {
+    display: none;
+  }
+  .header .warning-badge span {
+    display: none;
+  }
+  .main-content {
+    padding: 16px;
+  }
+  .kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kpi-card .kpi-value {
+    font-size: 24px;
+  }
+  .table-container {
+    font-size: 12px;
+  }
+  .table-container th,
+  .table-container td {
+    padding: 8px;
+  }
+  .section-header h2 {
+    font-size: 18px;
+  }
+}
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+.hidden { display: none !important; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.text-center { text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">360<span>Ops</span></div>
+      <span class="role-badge">Administrador</span>
+    </div>
+    <div class="header-right">
+      <div class="warning-badge">
+        <span>⚠️</span>
+        <span>Modo sensible</span>
+      </div>
+      <div class="user-info">
+        <div class="name">Miguel Ángel</div>
+        <div class="date" id="headerDate">Lunes 22 sep 2026</div>
+      </div>
+      <div class="avatar">MA</div>
+      <button class="help" onclick="showToast('Ayuda: soporte@360estates.com')">?</button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       LAYOUT
+       ============================================================ -->
+  <div class="layout">
+
+    <!-- ============================================================
+         SIDEBAR
+         ============================================================ -->
+    <aside class="sidebar">
+      <div class="sidebar-section-title">Principal</div>
+      <div class="sidebar-item active" onclick="showScreen('dashboard', this)">
+        <span class="sidebar-icon">📊</span>
+        <span>Dashboard</span>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section-title">Gestión</div>
+      <div class="sidebar-item" onclick="showScreen('usuarios', this)">
+        <span class="sidebar-icon">👥</span>
+        <span>Usuarios</span>
+        <span class="sidebar-badge" id="usersBadge">90</span>
+      </div>
+      <div class="sidebar-item" onclick="showScreen('roles', this)">
+        <span class="sidebar-icon">🎭</span>
+        <span>Roles y permisos</span>
+      </div>
+      <div class="sidebar-item" onclick="showScreen('zonas', this)">
+        <span class="sidebar-icon">📍</span>
+        <span>Zonas</span>
+      </div>
+      <div class="sidebar-item" onclick="showScreen('apartamentos', this)">
+        <span class="sidebar-icon">🏠</span>
+        <span>Apartamentos</span>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section-title">Configuración</div>
+      <div class="sidebar-item" onclick="showScreen('checklist', this)">
+        <span class="sidebar-icon">✅</span>
+        <span>Checklist</span>
+      </div>
+      <div class="sidebar-item" onclick="showScreen('notificaciones', this)">
+        <span class="sidebar-icon">🔔</span>
+        <span>Notificaciones</span>
+      </div>
+      <div class="sidebar-item" onclick="showScreen('integraciones', this)">
+        <span class="sidebar-icon">🔌</span>
+        <span>Integraciones</span>
+      </div>
+      <div class="sidebar-item" onclick="showScreen('seguridad', this)">
+        <span class="sidebar-icon">🔒</span>
+        <span>Seguridad</span>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section-title">Sistema</div>
+      <div class="sidebar-item" onclick="showScreen('logs', this)">
+        <span class="sidebar-icon">📋</span>
+        <span>Logs de auditoría</span>
+      </div>
+      <div class="sidebar-item" onclick="showScreen('backup', this)">
+        <span class="sidebar-icon">💾</span>
+        <span>Backup</span>
+      </div>
+    </aside>
+
+    <!-- ============================================================
+         MAIN CONTENT
+         ============================================================ -->
+    <main class="main-content">
+
+      <!-- ============================================================
+           DASHBOARD
+           ============================================================ -->
+      <section class="screen active" id="screen-dashboard">
+        <div class="section-header">
+          <div>
+            <h2>📊 Panel de administración</h2>
+            <p>Visión general del sistema y la operación</p>
+          </div>
+          <div class="actions">
+            <button class="btn btn-outline btn-sm" onclick="showToast('Exportando estado del sistema...')">
+              📥 Exportar estado
+            </button>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi-card">
+            <div class="kpi-label">Usuarios totales</div>
+            <div class="kpi-value">90</div>
+            <div class="kpi-change">87 activos</div>
+          </div>
+          <div class="kpi-card success">
+            <div class="kpi-label">Apartamentos</div>
+            <div class="kpi-value">500</div>
+            <div class="kpi-change">Todas las zonas</div>
+          </div>
+          <div class="kpi-card warn">
+            <div class="kpi-label">Zonas</div>
+            <div class="kpi-value">8</div>
+            <div class="kpi-change">3 con más carga</div>
+          </div>
+          <div class="kpi-card alert">
+            <div class="kpi-label">Logs hoy</div>
+            <div class="kpi-value">342</div>
+            <div class="kpi-change">12 requieren atención</div>
+          </div>
+        </div>
+
+        <div class="section mt-2">
+          <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+            ⚠️ Requiere tu atención
+          </h3>
+          <div id="attentionList"></div>
+        </div>
+
+        <div class="section mt-2">
+          <h3 style="font-size: 14px; color: var(--primary); margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+            📊 Estado del sistema
+          </h3>
+          <div class="config-grid">
+            <div class="config-card">
+              <div class="config-header">
+                <div class="config-icon">🖥️</div>
+                <div class="config-title">Servidor API</div>
+              </div>
+              <div class="config-desc">Uptime y respuesta del backend</div>
+              <div class="config-status">
+                <span class="status-dot ok"></span>
+                <span style="color: #2E7D32;">Operativo · 99.8% uptime</span>
+              </div>
+            </div>
+
+            <div class="config-card">
+              <div class="config-header">
+                <div class="config-icon">💾</div>
+                <div class="config-title">Base de datos</div>
+              </div>
+              <div class="config-desc">PostgreSQL principal</div>
+              <div class="config-status">
+                <span class="status-dot ok"></span>
+                <span style="color: #2E7D32;">Operativo · Última backup: 04:00</span>
+              </div>
+            </div>
+
+            <div class="config-card">
+              <div class="config-header">
+                <div class="config-icon">📦</div>
+                <div class="config-title">Almacenamiento S3</div>
+              </div>
+              <div class="config-desc">Fotos y PDFs</div>
+              <div class="config-status">
+                <span class="status-dot warn"></span>
+                <span style="color: var(--accent);">78% de capacidad usada</span>
+              </div>
+            </div>
+
+            <div class="config-card">
+              <div class="config-header">
+                <div class="config-icon">🔔</div>
+                <div class="config-title">Push FCM</div>
+              </div>
+              <div class="config-desc">Notificaciones a móviles</div>
+              <div class="config-status">
+                <span class="status-dot ok"></span>
+                <span style="color: #2E7D32;">Operativo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           USUARIOS
+           ============================================================ -->
+      <section class="screen" id="screen-usuarios">
+        <div class="section-header">
+          <div>
+            <h2>👥 Gestión de usuarios</h2>
+            <p>Administra las cuentas y sus roles</p>
+          </div>
+          <div class="actions">
+            <button class="btn btn-outline btn-sm" onclick="showToast('Exportando usuarios...')">
+              📥 Exportar
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="openUserModal()">
+              + Nuevo usuario
+            </button>
+          </div>
+        </div>
+
+        <div class="filters">
+          <button class="filter-chip active" onclick="filterUsers('all', this)">Todos</button>
+          <button class="filter-chip" onclick="filterUsers('cleaner', this)">Cleaners</button>
+          <button class="filter-chip" onclick="filterUsers('lider', this)">Líderes</button>
+          <button class="filter-chip" onclick="filterUsers('driver', this)">Drivers</button>
+          <button class="filter-chip" onclick="filterUsers('admin', this)">Admins</button>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Zona</th>
+                <th>Estado</th>
+                <th>Último acceso</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           ROLES
+           ============================================================ -->
+      <section class="screen" id="screen-roles">
+        <div class="section-header">
+          <div>
+            <h2>🎭 Roles y permisos</h2>
+            <p>Define qué puede hacer cada rol en el sistema</p>
+          </div>
+        </div>
+
+        <div class="config-grid" id="rolesGrid"></div>
+      </section>
+
+      <!-- ============================================================
+           ZONAS
+           ============================================================
